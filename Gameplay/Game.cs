@@ -21,13 +21,13 @@ namespace Gameplay
                 s.Name,
                 s.Egotistical,
                 Score = s.Actions.Average(_ => _.GetScore(s.Name)),
-                AggresiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
+                AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {
                 s.Name,
                 s.Egotistical,
                 s.Score,
-                AggresiveNumber = Math.Max(s.AggresiveNumber - 1, 0),
+                AggressiveNumber = Math.Max(s.AggressiveNumber - 1, 0),
                 Absolute = s.Score / Options.D,
                 Cooperation = s.Score / Options.C,
             }).OrderByDescending(_ => _.Score);
@@ -38,7 +38,7 @@ namespace Gameplay
             {
                 var succeedFlag = s.Absolute >= 63 && s.Cooperation >= 89 ? "*" : "";
                 var egotisticalFlag = s.Egotistical ? "E" : "";
-                var flagsStr = string.Format("{0,2}{1,2}{2,2}", succeedFlag, egotisticalFlag, s.AggresiveNumber);
+                var flagsStr = string.Format("{0,2}{1,2}{2,2}", succeedFlag, egotisticalFlag, s.AggressiveNumber);
                 Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr));
             }
 
