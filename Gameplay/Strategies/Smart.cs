@@ -6,6 +6,14 @@ namespace Gameplay.Strategies
 {
     internal class Smart() : IStrategy
     {
+        // Потенційно дуже цікава стратегія
+        // Автор: Перепічка Н.В.
+        // Агресивна (за Аксельродом)
+        // Егоїстична (авторський термін)
+        // Більш схильна прощати, ніж TitForTat
+        // Схильна експлуатувати надто добрих суперників
+        // Успішніша за TitForTat
+
         public string Name { get; private set; } = "! " + nameof(Smart);
 
         public bool Egotistical { get; private set; } = true;

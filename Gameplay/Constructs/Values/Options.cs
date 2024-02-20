@@ -11,12 +11,14 @@
         public const int d = 2;
         public const int c = 0;
 
-        public static double f = 0.5;
-
         public const int MinSteps = 100;
         public const int Repeats = 1;
 
+        // Гнучкість взаємодії (f) - авторська ідея дослідження стратегій (Перепічка Н.В.)
+
         public static bool HumaneFlexible = true;
         public static bool EgotisticalFlexible = true;
+
+        public static double f = 0.5;
     }
 }
