@@ -1,15 +1,13 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Constructs.Values;
-using Gameplay.Strategies;
+﻿using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay
+namespace Gameplay.Games.Tournament
 {
     internal static class Game
     {
         private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
 
-        private static void WriteScores(List<IStrategy> strategies, List<ActionsHistory> actions)
+        private static void WriteScores(List<IStrategy> strategies, List<History> actions)
         {
             var score = strategies.Select(s => new
             {
@@ -55,7 +53,7 @@ namespace Gameplay
             Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}");
 
             List<IStrategy> strategies = null;
-            List<ActionsHistory> actions = [];
+            List<History> actions = [];
             Options.HumaneFlexible = humaneFlexible;
             Options.EgotisticalFlexible = egotisticalFlexible;
             Options.f = f;

@@ -1,17 +1,16 @@
-﻿using Gameplay.Constructs.Enums;
-using Gameplay.Constructs.Values;
+﻿using Gameplay.Enums;
 
-namespace Gameplay.Constructs
+namespace Gameplay.Games.Tournament
 {
-    internal class ActionsHistory(string strategy1Name, string strategy2Name)
+    internal class History(string strategy1Name, string strategy2Name)
     {
         public string Strategy1Name { get; private set; } = strategy1Name;
 
         public string Strategy2Name { get; private set; } = strategy2Name;
 
-        private List<ActionsHistoryItem> Strategy1Actions { get; set; } = [];
+        private List<HistoryItem> Strategy1Actions { get; set; } = [];
 
-        private List<ActionsHistoryItem> Strategy2Actions { get; set; } = [];
+        private List<HistoryItem> Strategy2Actions { get; set; } = [];
 
         private List<double> CooperationScores1 { get; set; } = [];
 
@@ -58,17 +57,17 @@ namespace Gameplay.Constructs
             return n;
         }
 
-        public List<ActionsHistoryItem> GetStrategy1Actions()
+        public List<HistoryItem> GetStrategy1Actions()
         {
             return Strategy1Actions;
         }
 
-        public List<ActionsHistoryItem> GetStrategy2Actions()
+        public List<HistoryItem> GetStrategy2Actions()
         {
             return Strategy2Actions;
         }
 
-        public void AddAction(ActionsHistoryItem strategy1ActionItem, ActionsHistoryItem strategy2ActionItem)
+        public void AddAction(HistoryItem strategy1ActionItem, HistoryItem strategy2ActionItem)
         {
             Strategy1Actions.Add(strategy1ActionItem);
             Strategy2Actions.Add(strategy2ActionItem);
@@ -80,7 +79,7 @@ namespace Gameplay.Constructs
         }
 
         // Author's idea for determining the optimal number of iterations, based on the idea from the 2nd Axelrod tournament
-        public bool ShouldStop()
+        public bool ShouldStopTournament()
         {
             var step = GetStepsCount();
             var cooperationScore1 = Math.Round(GetScoresSum(Strategy1Name) * 100 / (step * Options.C), 2);

@@ -1,10 +1,10 @@
-﻿using Gameplay.Constructs.Enums;
-using Gameplay.Constructs.Values;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Constructs
+namespace Gameplay.Games.Abstracts
 {
-    internal class GameField : IDisposable
+    internal abstract class GameField : IDisposable
     {
         public GameField(params IStrategy[] strategies)
         {
@@ -15,7 +15,7 @@ namespace Gameplay.Constructs
 
         public List<IStrategy> Strategies { get; private set; }
 
-        public List<ActionsHistory> Actions { get; private set; }
+        public List<History> Actions { get; private set; }
 
         private void AddStrategies(params IStrategy[] strategies)
         {
@@ -30,55 +30,14 @@ namespace Gameplay.Constructs
 
                 foreach (var s in Strategies)
                 {
-                    Actions.Add(new ActionsHistory(s.Name, strategy.Name));
+                    Actions.Add(new History(s.Name, strategy.Name));
                 }
             }
         }
 
-        public void DoSteps()
-        {
-            Parallel.ForEach(Actions, actions =>
-            {
-                var step = 1;
-                var s1 = Strategies.First(_ => _.Name == actions.Strategy1Name);
-                var s2 = Strategies.First(_ => _.Name == actions.Strategy2Name);
+        public abstract void DoSteps();
 
-                while (true)
-                {
-                    var strategy1Actions = actions.GetStrategy1Actions();
-                    var strategy2Actions = actions.GetStrategy2Actions();
-
-                    var action1 = s1.DoAction(strategy1Actions, strategy2Actions, step);
-                    var action2 = s2.DoAction(strategy2Actions, strategy1Actions, step);
-
-                    var action1Intensive = CalculateActionIntensive(s1, action1, strategy1Actions, strategy2Actions);
-                    var action2Intensive = CalculateActionIntensive(s2, action2, strategy2Actions, strategy1Actions);
-
-                    var action1Item = new ActionsHistoryItem()
-                    {
-                        Action = action1,
-                        ActionIntensive = action1Intensive,
-                        Score = CalculateScore(action1, action1Intensive, action2, action2Intensive)
-                    };
-                    var action2Item = new ActionsHistoryItem()
-                    {
-                        Action = action2,
-                        ActionIntensive = action2Intensive,
-                        Score = CalculateScore(action2, action2Intensive, action1, action1Intensive)
-                    };
-
-                    actions.AddAction(action1Item, action2Item);
-
-                    if (actions.ShouldStop())
-                    {
-                        break;
-                    }
-                    step++;
-                }
-            });
-        }
-
-        private static GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<ActionsHistoryItem> ownActions, List<ActionsHistoryItem> opponentActions)
+        protected static GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
         {
             if (!Options.EgotisticalFlexible && strategy.Egotistical || !Options.HumaneFlexible && !strategy.Egotistical)
             {
@@ -90,11 +49,11 @@ namespace Gameplay.Constructs
             return lastOpponentAction?.Action != action || lastOwnAction?.Action != action ? GameActionIntensive.Low : GameActionIntensive.Normal;
         }
 
-        private static double CalculateScore(GameAction ownAction, GameActionIntensive ownActionIntensive, GameAction oppositeAction, GameActionIntensive oppositeActionIntensive)
+        protected static double CalculateScore(GameAction ownAction, GameActionIntensive ownActionIntensive, GameAction oppositeAction, GameActionIntensive oppositeActionIntensive)
         {
             double score = ownAction == GameAction.Cooperate
-                ? (oppositeAction == GameAction.Cooperate ? Options.C : Options.c)
-                : (oppositeAction == GameAction.Cooperate ? Options.D : Options.d);
+                ? oppositeAction == GameAction.Cooperate ? Options.C : Options.c
+                : oppositeAction == GameAction.Cooperate ? Options.D : Options.d;
 
             if (ownAction == oppositeAction)
             {

@@ -1,5 +1,5 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Constructs.Enums;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament;
 
 namespace Gameplay.Strategies.Interfaces
 {
@@ -9,6 +9,6 @@ namespace Gameplay.Strategies.Interfaces
 
         bool Egotistical { get; }
 
-        GameAction DoAction(List<ActionsHistoryItem> ownActions, List<ActionsHistoryItem> opponentActions, int step);
+        GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step);
     }
 }

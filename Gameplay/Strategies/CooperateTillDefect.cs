@@ -1,5 +1,5 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Constructs.Enums;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Strategies
@@ -12,7 +12,7 @@ namespace Gameplay.Strategies
 
         public bool Egotistical { get; private set; } = true;
 
-        public GameAction DoAction(List<ActionsHistoryItem> ownActions, List<ActionsHistoryItem> opponentActions, int step)
+        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             return opponentActions.Any(_ => _.Action == GameAction.Defect) ? GameAction.Defect : GameAction.Cooperate;
         }

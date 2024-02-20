@@ -1,8 +1,8 @@
-﻿using Gameplay.Constructs.Enums;
+﻿using Gameplay.Enums;
 
-namespace Gameplay.Constructs
+namespace Gameplay.Games.Tournament
 {
-    internal class ActionsHistoryItem()
+    internal class HistoryItem()
     {
         public GameAction Action { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace Gameplay.Constructs.Enums
+﻿namespace Gameplay.Enums
 {
     internal enum GameAction
     {
