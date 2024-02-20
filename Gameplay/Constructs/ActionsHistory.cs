@@ -79,7 +79,7 @@ namespace Gameplay.Constructs
             return Strategy1Actions.Count;
         }
 
-        // Aвторська ідея для визначення оптимальної кількості ітерацій (Перепічка Н.В.), за основу взято ідею з 2-го турніру Аксельрода
+        // Author's idea for determining the optimal number of iterations, based on the idea from the 2nd Axelrod tournament
         public bool ShouldStop()
         {
             var step = GetStepsCount();

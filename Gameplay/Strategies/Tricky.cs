@@ -6,7 +6,7 @@ namespace Gameplay.Strategies
 {
     internal class Tricky() : IStrategy
     {
-        // Перші 5 - співпрацюємо. Якщо перед цим зраджували, то зраджуємо поки опонент не зрадить. Якщо останні 3 раз співпрацювали, то з імовірністю 50% зраджуємо. Інакше Співпрацюємо.
+        // The first 5 - cooperate. If defected just before - defect until the opponent defect. If cooperated last 3 times - defect with a probability. Otherwise, cooperate.
 
         public string Name { get; private set; } = nameof(Tricky);
 
