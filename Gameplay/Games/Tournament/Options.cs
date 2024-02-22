@@ -17,5 +17,8 @@
 
         public const int MinSteps = 100;
         public const int Repeats = 1;
+
+        // Chance of strategy to play randomly (0% - 100%)
+        public static int Seed = 0;
     }
 }

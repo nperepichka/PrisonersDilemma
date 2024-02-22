@@ -1,4 +1,5 @@
-﻿using Gameplay.Strategies.Interfaces;
+﻿using Gameplay.Enums;
+using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
@@ -17,8 +18,12 @@ namespace Gameplay.Games.Tournament
                     var strategy1Actions = actions.GetStrategy1Actions();
                     var strategy2Actions = actions.GetStrategy2Actions();
 
-                    var action1 = s1.DoAction(strategy1Actions, strategy2Actions, step);
-                    var action2 = s2.DoAction(strategy2Actions, strategy1Actions, step);
+                    var action1 = ShouldDoRandomAction()
+                        ? (GameAction)Randomizer.Next(2)
+                        : s1.DoAction(strategy1Actions, strategy2Actions, step);
+                    var action2 = ShouldDoRandomAction()
+                        ? (GameAction)Randomizer.Next(2)
+                        : s2.DoAction(strategy2Actions, strategy1Actions, step);
 
                     var action1Intensive = CalculateActionIntensive(s1, action1, strategy1Actions, strategy2Actions);
                     var action2Intensive = CalculateActionIntensive(s2, action2, strategy2Actions, strategy1Actions);

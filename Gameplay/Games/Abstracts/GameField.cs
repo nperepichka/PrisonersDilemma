@@ -13,6 +13,8 @@ namespace Gameplay.Games.Abstracts
             AddStrategies(strategies);
         }
 
+        protected readonly Random Randomizer = new();
+
         public List<IStrategy> Strategies { get; private set; }
 
         public List<History> Actions { get; private set; }
@@ -103,6 +105,11 @@ namespace Gameplay.Games.Abstracts
         private static double GetScoreMod(GameActionIntensive actionIntensive)
         {
             return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
+        }
+
+        protected bool ShouldDoRandomAction()
+        {
+            return Options.Seed > 0 && Randomizer.Next(0, 101) <= Options.Seed;
         }
 
         public void Dispose()

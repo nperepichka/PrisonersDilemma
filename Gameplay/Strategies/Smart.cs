@@ -7,7 +7,7 @@ namespace Gameplay.Strategies
     internal class Smart() : IStrategy
     {
         // Potentially very interesting strategy
-        // Aggressive (according to Axelrod)
+        // Mean/nasty (according to Axelrod)
         // Egotistical (author's term)
         // More forgiving than TitForTat
         // Tends to exploit too good opponents
