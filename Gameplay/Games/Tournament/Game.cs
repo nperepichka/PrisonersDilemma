@@ -42,7 +42,8 @@ namespace Gameplay.Games.Tournament
 
             var egotisticalTotalScore = score.Where(_ => _.Egotistical).Sum(s => s.Score);
             var humaneTotalScore = score.Where(_ => !_.Egotistical).Sum(s => s.Score);
-            Console.WriteLine($"Total score: egotistical {egotisticalTotalScore:0.00} / humane {humaneTotalScore:0.00}");
+            var maxActions = Math.Max(actions.Max(_ => _.GetStrategy1Actions().Count()), actions.Max(_ => _.GetStrategy2Actions().Count()));
+            Console.WriteLine($"Total score: egotistical {egotisticalTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}");
             Console.WriteLine();
         }
 
@@ -50,7 +51,7 @@ namespace Gameplay.Games.Tournament
         {
             var naff = humaneFlexible ? "HF " : "";
             var aff = egotisticalFlexible ? "EF" : "";
-            Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}");
+            Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}   Seed: {Options.Seed:0.00}");
 
             List<IStrategy> strategies = null;
             List<History> actions = [];

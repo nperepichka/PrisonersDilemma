@@ -109,7 +109,7 @@ namespace Gameplay.Games.Abstracts
 
         protected bool ShouldDoRandomAction()
         {
-            return Options.Seed > 0 && Randomizer.Next(0, 101) <= Options.Seed;
+            return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100;
         }
 
         public void Dispose()
