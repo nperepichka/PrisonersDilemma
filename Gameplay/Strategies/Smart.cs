@@ -9,11 +9,10 @@ namespace Gameplay.Strategies
         // Potentially very interesting strategy
         // Mean/nasty (according to Axelrod)
         // Egotistical (author's term)
-        // More forgiving than TitForTat
         // Tends to exploit too good opponents
         // More successful than TitForTat
 
-        public string Name { get; private set; } = "! " + nameof(Smart);
+        public string Name { get; private set; } = nameof(Smart);
 
         public bool Egotistical { get; private set; } = true;
 

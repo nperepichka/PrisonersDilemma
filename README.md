@@ -1,3 +1,3 @@
 # PrisonersDilemma
-Author: Perepichka N.V.
+Author: N. V. Perepichka
 Implemented in scope of PhD study

@@ -6,7 +6,7 @@ namespace Gameplay.Strategies
 {
     internal class TitForTat() : IStrategy
     {
-        public string Name { get; private set; } = "! " + nameof(TitForTat);
+        public string Name { get; private set; } = nameof(TitForTat);
 
         public bool Egotistical { get; private set; } = false;
 
