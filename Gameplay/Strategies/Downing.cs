@@ -38,22 +38,21 @@ namespace Gameplay.Strategies
                 cache["number_opponent_cooperations_in_response_to_D"] = GetCacheValue(cache, "number_opponent_cooperations_in_response_to_D", () => 0) + 1;
             }
 
-            double number_opponent_cooperations_in_response_to_C = GetCacheValue(cache, "number_opponent_cooperations_in_response_to_C", () => 0);
-            double number_opponent_cooperations_in_response_to_D = GetCacheValue(cache, "number_opponent_cooperations_in_response_to_D", () => 0);
+            double numberOpponentCooperationsInResponseToC = GetCacheValue(cache, "number_opponent_cooperations_in_response_to_C", () => 0);
+            double numberOpponentCooperationsInResponseToD = GetCacheValue(cache, "number_opponent_cooperations_in_response_to_D", () => 0);
             var ownCooperates = ownActions.Count(_ => _.Action == GameAction.Cooperate);
-            //var ownDefects = ownActions.Count(_ => _.Action == GameAction.Defect);
             var ownDefects = ownActions.Count - ownCooperates;
-            var alpha = number_opponent_cooperations_in_response_to_C / (ownCooperates + 1);
-            var beta = number_opponent_cooperations_in_response_to_D / Math.Max(ownDefects, 2);
+            var alpha = numberOpponentCooperationsInResponseToC / (ownCooperates + 1);
+            var beta = numberOpponentCooperationsInResponseToD / Math.Max(ownDefects, 2);
 
-            var expected_value_of_cooperating = alpha * Options.C + (1 - alpha) * Options.c;
-            var expected_value_of_defecting = beta * Options.D + (1 - beta) * Options.d;
+            var expectedValueOfCooperating = alpha * Options.C + (1 - alpha) * Options.c;
+            var expectedValueOfDefecting = beta * Options.D + (1 - beta) * Options.d;
 
-            if (expected_value_of_cooperating > expected_value_of_defecting)
+            if (expectedValueOfCooperating > expectedValueOfDefecting)
             {
                 return GameAction.Cooperate;
             }
-            if (expected_value_of_cooperating < expected_value_of_defecting)
+            if (expectedValueOfCooperating < expectedValueOfDefecting)
             {
                 return GameAction.Defect;
             }
