@@ -1,18 +1,17 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class CooperateTillDefect() : IStrategy
+    /// <summary>
+    /// Friedman
+    /// </summary>
+    internal class CooperateTillDefect() : Strategy
     {
-        // Friedman
+        public override bool Egotistical => true;
 
-        public string Name { get; private set; } = nameof(CooperateTillDefect);
-
-        public bool Egotistical { get; private set; } = true;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             return opponentActions.Any(_ => _.Action == GameAction.Defect) ? GameAction.Defect : GameAction.Cooperate;
         }

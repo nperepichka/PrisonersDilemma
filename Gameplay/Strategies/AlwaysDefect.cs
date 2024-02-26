@@ -1,16 +1,14 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class AlwaysDefect() : IStrategy
+    internal class AlwaysDefect() : Strategy
     {
-        public string Name { get; private set; } = nameof(AlwaysDefect);
+        public override bool Egotistical => true;
 
-        public bool Egotistical { get; private set; } = true;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             return GameAction.Defect;
         }

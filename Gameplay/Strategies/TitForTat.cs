@@ -1,16 +1,12 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class TitForTat() : IStrategy
+    internal class TitForTat() : Strategy
     {
-        public string Name { get; private set; } = nameof(TitForTat);
-
-        public bool Egotistical { get; private set; } = false;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             var lastOpponentAction = opponentActions.LastOrDefault();
             return lastOpponentAction?.Action ?? GameAction.Cooperate;

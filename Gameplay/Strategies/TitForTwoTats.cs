@@ -1,22 +1,21 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class TitForTwoTats() : IStrategy
+    /// <summary>
+    /// Sample
+    /// </summary>
+    internal class TitForTwoTats() : Strategy
     {
-        // Sample
-
-        public string Name { get; private set; } = nameof(TitForTwoTats);
-
-        public bool Egotistical { get; private set; } = false;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             var lastOpponentAction1 = opponentActions.LastOrDefault();
-            var lastOpponentAction2 = opponentActions.ElementAtOrDefault(step - 3);
-            return lastOpponentAction1?.Action == GameAction.Defect && lastOpponentAction2?.Action == GameAction.Defect ? GameAction.Defect : GameAction.Cooperate;
+            var lastOpponentAction2 = GetLastItem(opponentActions, 2);
+            return lastOpponentAction1?.Action == GameAction.Defect && lastOpponentAction2?.Action == GameAction.Defect
+                ? GameAction.Defect
+                : GameAction.Cooperate;
         }
     }
 }

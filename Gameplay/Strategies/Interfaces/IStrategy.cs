@@ -7,6 +7,8 @@ namespace Gameplay.Strategies.Interfaces
     {
         string Name { get; }
 
+        string Id { get; }
+
         bool Egotistical { get; }
 
         GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step);

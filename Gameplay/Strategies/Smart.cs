@@ -1,45 +1,26 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class Smart() : IStrategy
+    /// <summary>
+    /// The first 5 - cooperate.
+    /// If opponent always cooperated - defect.
+    /// If opponent always defected - defect.
+    /// If opponent defected * 3 < steps - cooperate
+    /// Otherwise, defect.
+    /// </summary>
+    internal class Smart() : Strategy
     {
-        // Potentially very interesting strategy
-        // Mean/nasty (according to Axelrod)
-        // Egotistical (author's term)
-        // Tends to exploit too good opponents
-        // More successful than TitForTat
+        public override bool Egotistical => true;
 
-        public string Name { get; private set; } = nameof(Smart);
-
-        public bool Egotistical { get; private set; } = true;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
-            if (step <= 5)
-            {
-                return GameAction.Cooperate;
-            }
-
-            if (opponentActions.All(_ => _.Action == GameAction.Cooperate))
-            {
-                return GameAction.Defect;
-            }
-
-            if (opponentActions.All(_ => _.Action == GameAction.Defect))
-            {
-                return GameAction.Defect;
-            }
-
             var defectsCount = opponentActions.Count(_ => _.Action == GameAction.Defect);
-            if (defectsCount * 3 <= opponentActions.Count)
-            {
-                return GameAction.Cooperate;
-            }
-
-            return GameAction.Defect;
+            return step <= 5 || defectsCount > 0 && defectsCount * 3 < step
+                ? GameAction.Cooperate
+                : GameAction.Defect;
         }
     }
 }

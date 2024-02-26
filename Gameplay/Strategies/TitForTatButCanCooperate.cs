@@ -1,18 +1,12 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class TitForTatButCanCooperate() : IStrategy
+    internal class TitForTatButCanCooperate() : Strategy
     {
-        public string Name { get; private set; } = nameof(TitForTatButCanCooperate);
-
-        public bool Egotistical { get; private set; } = false;
-
-        private readonly Random Randomizer = new();
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             var lastOwnAction = ownActions.LastOrDefault();
             var lastOpponentAction = opponentActions.LastOrDefault();

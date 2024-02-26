@@ -1,16 +1,12 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class AlwaysCooperate() : IStrategy
+    internal class AlwaysCooperate() : Strategy
     {
-        public string Name { get; private set; } = nameof(AlwaysCooperate);
-
-        public bool Egotistical { get; private set; } = false;
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             return GameAction.Cooperate;
         }

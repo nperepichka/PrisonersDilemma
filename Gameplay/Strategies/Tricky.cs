@@ -1,20 +1,20 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Tournament;
-using Gameplay.Strategies.Interfaces;
+using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    internal class Tricky() : IStrategy
+    /// <summary>
+    /// The first 5 - cooperate.
+    /// If defected just before - defect until the opponent defect.
+    /// If cooperated last 3 times - defect with a probability.
+    /// Otherwise, cooperate.
+    /// </summary>
+    internal class Tricky() : Strategy
     {
-        // The first 5 - cooperate. If defected just before - defect until the opponent defect. If cooperated last 3 times - defect with a probability. Otherwise, cooperate.
+        public override bool Egotistical => true;
 
-        public string Name { get; private set; } = nameof(Tricky);
-
-        public bool Egotistical { get; private set; } = true;
-
-        private readonly Random Randomizer = new();
-
-        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
         {
             if (step <= 5)
             {
@@ -29,8 +29,8 @@ namespace Gameplay.Strategies
                 return lastOpponentAction?.Action == GameAction.Defect ? GameAction.Cooperate : GameAction.Defect;
             }
 
-            var lastOwnAction2 = ownActions.ElementAtOrDefault(step - 3);
-            var lastOwnAction3 = ownActions.ElementAtOrDefault(step - 4);
+            var lastOwnAction2 = GetLastItem(ownActions, 2);
+            var lastOwnAction3 = GetLastItem(ownActions, 3);
 
             if (
                 lastOwnAction1?.Action == GameAction.Cooperate
