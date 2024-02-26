@@ -4,14 +4,13 @@ using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    /// <summary>
-    /// Friedman
-    /// </summary>
-    internal class CooperateTillDefect() : Strategy
+    internal class Friedman() : Strategy
     {
+        public override bool Nice => true;
+
         public override bool Egotistical => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             return opponentActions.Any(_ => _.Action == GameAction.Defect) ? GameAction.Defect : GameAction.Cooperate;
         }

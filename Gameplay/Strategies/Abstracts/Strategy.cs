@@ -19,13 +19,26 @@ namespace Gameplay.Strategies.Abstracts
 
         public virtual bool Egotistical => false;
 
-        public abstract GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step);
+        public virtual bool Nice => false;
+
+        public abstract GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step);
 
         protected readonly Random Randomizer = new();
 
         protected static HistoryItem? GetLastItem(List<HistoryItem> list, int indexFromEnd)
         {
             return list.ElementAtOrDefault(list.Count - indexFromEnd);
+        }
+
+        protected static T GetCacheValue<T>(Dictionary<string, object> cache, string key, Func<T> initFunc)
+        {
+            if (cache.TryGetValue(key, out var val) && val is T tval)
+            {
+                return tval;
+            }
+            var res = initFunc();
+            cache.Add(key, res);
+            return res;
         }
     }
 }

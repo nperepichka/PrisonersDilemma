@@ -15,7 +15,10 @@
 
         public static double f = 0.5;
 
+        public static int? Steps = null;
         public const int MinSteps = 100;
+        public const int SameLastCooperationScores = 10;
+        public const double ValuableCooperationScoreNumber = 0.01;
         public const int Repeats = 1;
 
         // Chance of strategy to play randomly (0.00% - 100.00%)

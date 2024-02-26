@@ -8,7 +8,7 @@ namespace Gameplay.Strategies
     {
         public override bool Egotistical => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             return GameAction.Defect;
         }

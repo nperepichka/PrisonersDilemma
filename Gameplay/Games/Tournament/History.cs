@@ -16,6 +16,10 @@ namespace Gameplay.Games.Tournament
 
         private List<double> CooperationScores2 { get; set; } = [];
 
+        private Dictionary<string, object> Strategy1Cache { get; set; } = [];
+
+        private Dictionary<string, object> Strategy2Cache { get; set; } = [];
+
         private double GetScoresSum(string strategyName)
         {
             double score = 0;
@@ -67,6 +71,16 @@ namespace Gameplay.Games.Tournament
             return Strategy2Actions;
         }
 
+        public Dictionary<string, object> GetStrategy1Cache()
+        {
+            return Strategy1Cache;
+        }
+
+        public Dictionary<string, object> GetStrategy2Cache()
+        {
+            return Strategy2Cache;
+        }
+
         public void AddAction(HistoryItem strategy1ActionItem, HistoryItem strategy2ActionItem)
         {
             Strategy1Actions.Add(strategy1ActionItem);
@@ -82,8 +96,14 @@ namespace Gameplay.Games.Tournament
         public bool ShouldStopTournament()
         {
             var step = GetStepsCount();
-            var cooperationScore1 = Math.Round(GetScoresSum(Strategy1Name) * 100 / (step * Options.C), 2);
-            var cooperationScore2 = Math.Round(GetScoresSum(Strategy2Name) * 100 / (step * Options.C), 2);
+
+            if (Options.Steps.HasValue)
+            {
+                return step == Options.Steps;
+            }
+
+            var cooperationScore1 = GetScoresSum(Strategy1Name) * 100 / (step * Options.C);
+            var cooperationScore2 = GetScoresSum(Strategy2Name) * 100 / (step * Options.C);
             CooperationScores1.Add(cooperationScore1);
             CooperationScores2.Add(cooperationScore2);
 
@@ -92,9 +112,12 @@ namespace Gameplay.Games.Tournament
                 return false;
             }
 
-            for (var i = step - 2; i >= step - 10; i--)
+            for (var i = step - 2; i >= step - Options.SameLastCooperationScores; i--)
             {
-                if (cooperationScore1 != CooperationScores1.ElementAt(i) || cooperationScore2 != CooperationScores2.ElementAt(i))
+                if (
+                    Math.Abs(cooperationScore1 - CooperationScores1.ElementAt(i)) > Options.ValuableCooperationScoreNumber
+                    || Math.Abs(cooperationScore2 - CooperationScores2.ElementAt(i)) > Options.ValuableCooperationScoreNumber
+                    )
                 {
                     return false;
                 }

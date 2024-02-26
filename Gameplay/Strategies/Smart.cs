@@ -5,7 +5,7 @@ using Gameplay.Strategies.Abstracts;
 namespace Gameplay.Strategies
 {
     /// <summary>
-    /// The first 5 - cooperate.
+    /// The first 10 - cooperate.
     /// If opponent always cooperated - defect.
     /// If opponent always defected - defect.
     /// If opponent defected * 3 < steps - cooperate
@@ -15,10 +15,10 @@ namespace Gameplay.Strategies
     {
         public override bool Egotistical => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             var defectsCount = opponentActions.Count(_ => _.Action == GameAction.Defect);
-            return step <= 5 || defectsCount > 0 && defectsCount * 3 < step
+            return step <= 10 || defectsCount > 0 && defectsCount * 3 < step
                 ? GameAction.Cooperate
                 : GameAction.Defect;
         }

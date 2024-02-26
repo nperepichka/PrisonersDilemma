@@ -13,17 +13,20 @@ namespace Gameplay.Games.Tournament
             {
                 s.Name,
                 s.Egotistical,
+                s.Nice,
                 Actions = actions.Where(_ => _.Strategy1Name == s.Name || _.Strategy2Name == s.Name),
             }).Select(s => new
             {
                 s.Name,
                 s.Egotistical,
+                s.Nice,
                 Score = s.Actions.Average(_ => _.GetScore(s.Name)),
                 AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {
                 s.Name,
                 s.Egotistical,
+                s.Nice,
                 s.Score,
                 AggressiveNumber = Math.Max(s.AggressiveNumber - 1, 0),
                 Absolute = s.Score / Options.D,
@@ -34,9 +37,10 @@ namespace Gameplay.Games.Tournament
             Console.WriteLine("-----------------------------------------------------------------------");
             foreach (var s in score)
             {
-                var succeedFlag = s.Absolute >= 63 && s.Cooperation >= 89 ? "*" : "";
+                var succeedFlag = s.Absolute >= 60 && s.Cooperation >= 85 ? "*" : "";
                 var egotisticalFlag = s.Egotistical ? "E" : "";
-                var flagsStr = string.Format("{0,2}{1,2}{2,2}", succeedFlag, egotisticalFlag, s.AggressiveNumber);
+                var niceFlag = s.Nice ? "N" : "";
+                var flagsStr = string.Format("{0,2}{1,2}{2,2}{3,2}", succeedFlag, niceFlag, egotisticalFlag, s.AggressiveNumber);
                 Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr));
             }
 
@@ -66,14 +70,15 @@ namespace Gameplay.Games.Tournament
                     new AlwaysDefect(),
                     new TitForTat(),
                     new AllRandom(),
-                    new CooperateTillDefect(),
+                    new Friedman(),
                     new TitForTwoTats(),
                     new TwoTitsForTat(),
                     new TitForTatButCanDefect(),
                     new TitForTatButCanCooperate(),
-                    new KindTitForTat(),
-                    new AfraidTitForTat(),
-                    new Tricky(),
+                    new Grofman(),
+                    new Tullock(),
+                    new Graaskamp(),
+                    new Downing(),
                     new Smart()
                     );
 

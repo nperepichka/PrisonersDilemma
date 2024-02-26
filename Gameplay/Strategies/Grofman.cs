@@ -4,20 +4,17 @@ using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
 {
-    /// <summary>
-    /// Almost Joss
-    /// </summary>
-    internal class TitForTatButCanDefect() : Strategy
+    internal class Grofman() : Strategy
     {
-        public override bool Egotistical => true;
+        public override bool Nice => true;
 
         public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             var lastOwnAction = ownActions.LastOrDefault();
             var lastOpponentAction = opponentActions.LastOrDefault();
-            return lastOpponentAction?.Action == GameAction.Defect
-                ? GameAction.Defect
-                : ((lastOwnAction?.Action == GameAction.Cooperate && Randomizer.Next(10) == 0) ? GameAction.Defect : GameAction.Cooperate);
+            return step == 1 || lastOwnAction?.Action == lastOpponentAction?.Action
+                ? GameAction.Cooperate
+                : (Randomizer.Next(7) < 2 ? GameAction.Cooperate : GameAction.Defect);
         }
     }
 }

@@ -6,7 +6,9 @@ namespace Gameplay.Strategies
 {
     internal class TitForTatButCanCooperate() : Strategy
     {
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override bool Nice => true;
+
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             var lastOwnAction = ownActions.LastOrDefault();
             var lastOpponentAction = opponentActions.LastOrDefault();

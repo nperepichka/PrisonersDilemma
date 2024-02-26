@@ -11,6 +11,8 @@ namespace Gameplay.Strategies.Interfaces
 
         bool Egotistical { get; }
 
-        GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step);
+        bool Nice { get; }
+
+        GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step);
     }
 }

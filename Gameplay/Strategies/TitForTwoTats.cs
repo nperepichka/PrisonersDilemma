@@ -9,7 +9,9 @@ namespace Gameplay.Strategies
     /// </summary>
     internal class TitForTwoTats() : Strategy
     {
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, int step)
+        public override bool Nice => true;
+
+        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
             var lastOpponentAction1 = opponentActions.LastOrDefault();
             var lastOpponentAction2 = GetLastItem(opponentActions, 2);
