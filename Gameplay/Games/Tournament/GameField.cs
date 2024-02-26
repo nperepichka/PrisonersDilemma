@@ -10,8 +10,8 @@ namespace Gameplay.Games.Tournament
             Parallel.ForEach(Actions, actions =>
             {
                 var step = 1;
-                var s1 = Strategies.First(_ => _.Name == actions.Strategy1Name);
-                var s2 = Strategies.First(_ => _.Name == actions.Strategy2Name);
+                var s1 = Strategies.First(_ => _.Id == actions.Strategy1Id);
+                var s2 = Strategies.First(_ => _.Id == actions.Strategy2Id);
 
                 while (true)
                 {

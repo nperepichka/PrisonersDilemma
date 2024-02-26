@@ -7,7 +7,7 @@ namespace Gameplay.Games.Tournament
     {
         private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
 
-        private static void WriteScores(List<IStrategy> strategies, List<History> actions)
+        private static void WriteScores(IEnumerable<IStrategy> strategies, List<History> actions)
         {
             var score = strategies.Select(s => new
             {
@@ -57,7 +57,7 @@ namespace Gameplay.Games.Tournament
             var aff = egotisticalFlexible ? "EF" : "";
             Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}   Seed: {Options.Seed:0.00}");
 
-            List<IStrategy> strategies = null;
+            IEnumerable<IStrategy> strategies = null;
             List<History> actions = [];
             Options.HumaneFlexible = humaneFlexible;
             Options.EgotisticalFlexible = egotisticalFlexible;
@@ -83,7 +83,7 @@ namespace Gameplay.Games.Tournament
                     );
 
                 gameField.DoSteps();
-                strategies ??= gameField.Strategies;
+                strategies ??= gameField.Strategies.DistinctBy(_ => _.Name);
                 actions.AddRange(gameField.Actions);
             }
 

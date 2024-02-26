@@ -10,12 +10,12 @@ namespace Gameplay.Strategies.Abstracts
         protected Strategy()
         {
             Name = new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType?.Name ?? "Unknown";
-            Id = $"{Name}-{Guid.NewGuid()}";
+            Id = Guid.NewGuid();
         }
 
         public string Name { get; private set; }
 
-        public string Id { get; private set; }
+        public Guid Id { get; private set; }
 
         public virtual bool Egotistical => false;
 

@@ -39,7 +39,7 @@ namespace Gameplay.Strategies
 
             if (step == GetCacheValue(cache, "next_random_defection_turn", () =>
             {
-                return step + Randomizer.Next(5,16);
+                return step + Randomizer.Next(5, 16);
             }))
             {
                 cache["next_random_defection_turn"] = step + Randomizer.Next(5, 16);
@@ -64,7 +64,7 @@ namespace Gameplay.Strategies
         {
             var isSame = true;
             var isTitForTat = true;
-            for (var i = 0; i < ownActions.Count; i++ )
+            for (var i = 0; i < ownActions.Count; i++)
             {
                 if (ownActions[i] != opponentActions[i])
                 {

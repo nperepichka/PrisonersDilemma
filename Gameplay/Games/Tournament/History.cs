@@ -1,12 +1,17 @@
 ﻿using Gameplay.Enums;
+using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class History(string strategy1Name, string strategy2Name)
+    internal class History(IStrategy strategy1, IStrategy strategy2)
     {
-        public string Strategy1Name { get; private set; } = strategy1Name;
+        public string Strategy1Name { get; private set; } = strategy1.Name;
 
-        public string Strategy2Name { get; private set; } = strategy2Name;
+        public string Strategy2Name { get; private set; } = strategy2.Name;
+
+        public Guid Strategy1Id { get; private set; } = strategy1.Id;
+
+        public Guid Strategy2Id { get; private set; } = strategy2.Id;
 
         private List<HistoryItem> Strategy1Actions { get; set; } = [];
 
@@ -32,6 +37,24 @@ namespace Gameplay.Games.Tournament
                 }
             }
             else if (Strategy2Name == strategyName)
+            {
+                score = Strategy2Actions.Select(_ => _.Score).Sum();
+            }
+            return score;
+        }
+
+        private double GetScoresSum(Guid strategyId)
+        {
+            double score = 0;
+            if (Strategy1Id == strategyId)
+            {
+                score = Strategy1Actions.Select(_ => _.Score).Sum();
+                if (Strategy2Id == strategyId)
+                {
+                    score = (score + Strategy2Actions.Select(_ => _.Score).Sum()) * 0.5;
+                }
+            }
+            else if (Strategy2Id == strategyId)
             {
                 score = Strategy2Actions.Select(_ => _.Score).Sum();
             }
@@ -102,8 +125,8 @@ namespace Gameplay.Games.Tournament
                 return step == Options.Steps;
             }
 
-            var cooperationScore1 = GetScoresSum(Strategy1Name) * 100 / (step * Options.C);
-            var cooperationScore2 = GetScoresSum(Strategy2Name) * 100 / (step * Options.C);
+            var cooperationScore1 = GetScoresSum(Strategy1Id) * 100 / (step * Options.C);
+            var cooperationScore2 = GetScoresSum(Strategy2Id) * 100 / (step * Options.C);
             CooperationScores1.Add(cooperationScore1);
             CooperationScores2.Add(cooperationScore2);
 

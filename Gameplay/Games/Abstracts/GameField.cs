@@ -23,16 +23,16 @@ namespace Gameplay.Games.Abstracts
         {
             foreach (var strategy in strategies)
             {
-                if (Strategies.Any(_ => _.Name == strategy.Name))
+                if (Strategies.Any(_ => _.Id == strategy.Id))
                 {
-                    throw new ArgumentException("Strategy with same name already exists");
+                    throw new ArgumentException("Strategy with same Id already exists");
                 }
 
                 Strategies.Add(strategy);
 
                 foreach (var s in Strategies)
                 {
-                    Actions.Add(new History(s.Name, strategy.Name));
+                    Actions.Add(new History(s, strategy));
                 }
             }
         }

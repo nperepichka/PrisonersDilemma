@@ -7,7 +7,7 @@ namespace Gameplay.Strategies.Interfaces
     {
         string Name { get; }
 
-        string Id { get; }
+        Guid Id { get; }
 
         bool Egotistical { get; }
 

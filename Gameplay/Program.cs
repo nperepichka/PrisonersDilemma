@@ -1,7 +1,7 @@
 ﻿using Gameplay.Enums;
 using System.Diagnostics;
-using TournamentGame = Gameplay.Games.Tournament.Game;
 using PopulationGame = Gameplay.Games.Population.Game;
+using TournamentGame = Gameplay.Games.Tournament.Game;
 
 var gameType = GameType.Tournament;
 

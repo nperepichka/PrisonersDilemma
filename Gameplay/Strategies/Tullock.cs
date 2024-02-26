@@ -16,9 +16,7 @@ namespace Gameplay.Strategies
             }
 
             var opponentCooperated = opponentActions.TakeLast(10).Count(_ => _.Action == GameAction.Cooperate);
-            var propCooperate = Math.Max(0, opponentCooperated - 1);
-
-            return Randomizer.Next(10) < propCooperate ? GameAction.Cooperate : GameAction.Defect;
+            return Randomizer.Next(10) < opponentCooperated - 1 ? GameAction.Cooperate : GameAction.Defect;
         }
     }
 }
