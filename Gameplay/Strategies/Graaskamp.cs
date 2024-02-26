@@ -57,7 +57,7 @@ namespace Gameplay.Strategies
             var v1 = Math.Max(opponentCooperates, opponentDefects) + 1.0;
             var v2 = Math.Min(opponentCooperates, opponentDefects) + 1.0;
 
-            return v1 / v2 < 1.01;
+            return v1 / v2 < 1.001;
         }
 
         private static bool IsOponentTitForTat(List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
