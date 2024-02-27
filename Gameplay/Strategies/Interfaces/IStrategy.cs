@@ -9,7 +9,7 @@ namespace Gameplay.Strategies.Interfaces
 
         Guid Id { get; }
 
-        bool Egotistical { get; }
+        bool Selfish { get; }
 
         bool Nice { get; }
 

@@ -41,7 +41,7 @@ namespace Gameplay.Games.Abstracts
 
         protected static GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
         {
-            if (!Options.EgotisticalFlexible && strategy.Egotistical || !Options.HumaneFlexible && !strategy.Egotistical)
+            if (!Options.SelfishFlexible && strategy.Selfish || !Options.HumaneFlexible && !strategy.Selfish)
             {
                 return GameActionIntensive.Normal;
             }

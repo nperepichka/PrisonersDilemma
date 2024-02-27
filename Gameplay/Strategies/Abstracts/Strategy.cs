@@ -17,7 +17,7 @@ namespace Gameplay.Strategies.Abstracts
 
         public Guid Id { get; private set; }
 
-        public virtual bool Egotistical => false;
+        public virtual bool Selfish => false;
 
         public virtual bool Nice => false;
 

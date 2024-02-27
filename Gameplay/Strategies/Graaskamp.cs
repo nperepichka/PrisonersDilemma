@@ -9,7 +9,7 @@ namespace Gameplay.Strategies
     /// </summary>
     internal class Graaskamp() : Strategy
     {
-        public override bool Egotistical => true;
+        public override bool Selfish => true;
 
         public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {
@@ -51,6 +51,25 @@ namespace Gameplay.Strategies
 
         private static bool IsOponentRandom(List<HistoryItem> opponentActions)
         {
+            /*int[] observed = new int[opponentActions.Count];
+            int[] expected = new int[opponentActions.Count];
+            var observedSum = 0;
+            var expectedSum = 0;
+
+            for (var i = 0; i < opponentActions.Count; i++)
+            {
+                if (opponentActions[i].Action == GameAction.Cooperate)
+                {
+                    observedSum++;
+                }
+                observed[i] = observedSum;
+                if (i % 2 == 0)
+                {
+                    expectedSum++;
+                }
+                expected[i] = expectedSum;
+            }*/
+
             var opponentCooperates = opponentActions.Select((_, i) => _.Action == GameAction.Cooperate ? 1 * i : 0).Sum();
             var opponentDefects = opponentActions.Select((_, i) => _.Action == GameAction.Defect ? 1 * i : 0).Sum();
 

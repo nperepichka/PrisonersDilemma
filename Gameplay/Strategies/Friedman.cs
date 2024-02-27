@@ -8,7 +8,7 @@ namespace Gameplay.Strategies
     {
         public override bool Nice => true;
 
-        public override bool Egotistical => true;
+        public override bool Selfish => true;
 
         public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
         {

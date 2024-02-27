@@ -5,7 +5,7 @@ namespace Gameplay.Games.Population
 {
     internal static class Game
     {
-        public static void RunGame(bool humaneFlexible, bool egotisticalFlexible)
+        public static void RunGame(bool humaneFlexible, bool selfishFlexible)
         {
             // TODO: implement
         }

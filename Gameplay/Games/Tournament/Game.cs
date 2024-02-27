@@ -12,20 +12,20 @@ namespace Gameplay.Games.Tournament
             var score = strategies.Select(s => new
             {
                 s.Name,
-                s.Egotistical,
+                s.Selfish,
                 s.Nice,
                 Actions = actions.Where(_ => _.Strategy1Name == s.Name || _.Strategy2Name == s.Name),
             }).Select(s => new
             {
                 s.Name,
-                s.Egotistical,
+                s.Selfish,
                 s.Nice,
                 Score = s.Actions.Average(_ => _.GetScore(s.Name)),
                 AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {
                 s.Name,
-                s.Egotistical,
+                s.Selfish,
                 s.Nice,
                 s.Score,
                 AggressiveNumber = Math.Max(s.AggressiveNumber - 1, 0),
@@ -38,29 +38,29 @@ namespace Gameplay.Games.Tournament
             foreach (var s in score)
             {
                 var succeedFlag = s.Absolute >= 60 && s.Cooperation >= 85 ? "*" : "";
-                var egotisticalFlag = s.Egotistical ? "E" : "";
+                var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
-                var flagsStr = string.Format("{0,2}{1,2}{2,2}{3,2}", succeedFlag, niceFlag, egotisticalFlag, s.AggressiveNumber);
+                var flagsStr = string.Format("{0,2}{1,2}{2,2}{3,2}", succeedFlag, niceFlag, selfishFlag, s.AggressiveNumber);
                 Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr));
             }
 
-            var egotisticalTotalScore = score.Where(_ => _.Egotistical).Sum(s => s.Score);
-            var humaneTotalScore = score.Where(_ => !_.Egotistical).Sum(s => s.Score);
+            var selfishTotalScore = score.Where(_ => _.Selfish).Sum(s => s.Score);
+            var humaneTotalScore = score.Where(_ => !_.Selfish).Sum(s => s.Score);
             var maxActions = Math.Max(actions.Max(_ => _.GetStrategy1Actions().Count), actions.Max(_ => _.GetStrategy2Actions().Count));
-            Console.WriteLine($"Total score: egotistical {egotisticalTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}");
+            Console.WriteLine($"Total score: selfish {selfishTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}");
             Console.WriteLine();
         }
 
-        public static void RunGame(double f, bool humaneFlexible, bool egotisticalFlexible)
+        public static void RunGame(double f, bool humaneFlexible, bool selfishFlexible)
         {
             var naff = humaneFlexible ? "HF " : "";
-            var aff = egotisticalFlexible ? "EF" : "";
+            var aff = selfishFlexible ? "EF" : "";
             Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}   Seed: {Options.Seed:0.00}");
 
             IEnumerable<IStrategy> strategies = null;
             List<History> actions = [];
             Options.HumaneFlexible = humaneFlexible;
-            Options.EgotisticalFlexible = egotisticalFlexible;
+            Options.SelfishFlexible = selfishFlexible;
             Options.f = f;
 
             for (var r = 0; r < Options.Repeats; r++)
