@@ -70,6 +70,7 @@ namespace Gameplay.Games.Tournament
                     new AlwaysDefect(),
                     new TitForTat(),
                     new AllRandom(),
+                    new AllReverse(),
                     new Friedman(),
                     new TitForTwoTats(),
                     new TwoTitsForTat(),
