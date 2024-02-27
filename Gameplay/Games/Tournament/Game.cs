@@ -76,6 +76,7 @@ namespace Gameplay.Games.Tournament
                     new TwoTitsForTat(),
                     new TitForTatButCanDefect(),
                     new TitForTatButCanCooperate(),
+                    new KindTitForTat(),
                     new Grofman(),
                     new Tullock(),
                     new Graaskamp(),
