@@ -54,7 +54,7 @@ namespace Gameplay.Games.Tournament
         public static void RunGame(double f, bool humaneFlexible, bool selfishFlexible)
         {
             var naff = humaneFlexible ? "HF " : "";
-            var aff = selfishFlexible ? "EF" : "";
+            var aff = selfishFlexible ? "SF" : "";
             Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}   Seed: {Options.Seed:0.00}");
 
             IEnumerable<IStrategy> strategies = null;
