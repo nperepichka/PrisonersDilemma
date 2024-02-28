@@ -1,27 +1,25 @@
 ﻿namespace Gameplay.Games.Tournament
 {
-    internal static class Options
+    internal class Options(
+        double flexibility,
+        bool humaneFlexible,
+        bool selfishFlexible
+        ) : Abstracts.Options
     {
-        // D > C > d > c
-        // 2C > D + c
-        public const int D = 7;
-        public const int C = 5;
-        public const int d = 2;
-        public const int c = 0;
+        public override int D => 7;
+        public override int C => 5;
+        public override int d => 2;
+        public override int c => 0;
 
         // Flexibility of interaction (f) - the author's idea of strategy research
-        public static bool HumaneFlexible = true;
-        public static bool SelfishFlexible = true;
+        public override bool HumaneFlexible => humaneFlexible;
+        public override bool SelfishFlexible => selfishFlexible;
 
-        public static double f = 0.5;
+        public override double f => flexibility;
 
-        public static int? Steps = null;
-        public const int MinSteps = 100;
-        public const int SameLastCooperationScores = 10;
-        public const double ValuableCooperationScoreNumber = 0.01;
-        public const int Repeats = 1;
-
-        // Chance of strategy to play randomly (0.00% - 100.00%)
-        public static double Seed = 0;
+        public readonly int MinSteps = 100;
+        public readonly int SameLastCooperationScores = 10;
+        public readonly double ValuableCooperationScoreNumber = 0.01;
+        public readonly int Repeats = 1;
     }
 }

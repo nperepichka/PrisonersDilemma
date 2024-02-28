@@ -1,20 +1,25 @@
-﻿using Gameplay.Strategies;
+﻿using Gameplay.Constructs;
+using Gameplay.Games.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal static class Game
+    internal class Game(double f, bool humaneFlexible, bool selfishFlexible)
     {
         private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
 
-        private static void WriteScores(IEnumerable<IStrategy> strategies, List<History> actions)
+        private Options Options { get; set; } = new Options(f, humaneFlexible, selfishFlexible);
+
+        private IEnumerable<IStrategy> Strategies { get; set; }
+
+        private void WriteScores(List<History> actions)
         {
-            var score = strategies.Select(s => new
+            var score = Strategies.Select(s => new
             {
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Actions = actions.Where(_ => _.Strategy1Name == s.Name || _.Strategy2Name == s.Name),
+                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)),
             }).Select(s => new
             {
                 s.Name,
@@ -51,45 +56,25 @@ namespace Gameplay.Games.Tournament
             Console.WriteLine();
         }
 
-        public static void RunGame(double f, bool humaneFlexible, bool selfishFlexible)
+        public void RunGame()
         {
-            var naff = humaneFlexible ? "HF " : "";
-            var aff = selfishFlexible ? "SF" : "";
-            Console.WriteLine($"Flexible: {f:0.00} {naff}{aff}   Seed: {Options.Seed:0.00}");
+            var gameStrategies = StrategiesBuilder.GetAllStrategies();
+            Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
-            IEnumerable<IStrategy> strategies = null;
             List<History> actions = [];
-            Options.HumaneFlexible = humaneFlexible;
-            Options.SelfishFlexible = selfishFlexible;
-            Options.f = f;
+
+            var hff = Options.HumaneFlexible ? "HF " : "";
+            var sff = Options.SelfishFlexible ? "SF" : "";
+            Console.WriteLine($"Flexible: {f:0.00} {hff}{sff}   Seed: {Options.Seed:0.00}");
 
             for (var r = 0; r < Options.Repeats; r++)
             {
-                using var gameField = new GameField(
-                    new AlwaysCooperate(),
-                    new AlwaysDefect(),
-                    new TitForTat(),
-                    new AllRandom(),
-                    new AllReverse(),
-                    new Friedman(),
-                    new TitForTwoTats(),
-                    new TwoTitsForTat(),
-                    new TitForTatButCanDefect(),
-                    new TitForTatButCanCooperate(),
-                    new KindTitForTat(),
-                    new Grofman(),
-                    new Tullock(),
-                    new Graaskamp(),
-                    new Downing(),
-                    new Smart()
-                    );
-
+                var gameField = new GameField(Options, gameStrategies);
                 gameField.DoSteps();
-                strategies ??= gameField.Strategies.DistinctBy(_ => _.Name);
                 actions.AddRange(gameField.Actions);
             }
 
-            WriteScores(strategies, actions);
+            WriteScores(actions);
         }
     }
 }

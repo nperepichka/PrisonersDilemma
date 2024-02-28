@@ -4,23 +4,24 @@ using PopulationGame = Gameplay.Games.Population.Game;
 using TournamentGame = Gameplay.Games.Tournament.Game;
 
 var gameType = GameType.Tournament;
+//var gameType = GameType.Population;
 
 var watch = Stopwatch.StartNew();
 
 switch (gameType)
 {
     case GameType.Tournament:
-        TournamentGame.RunGame(0, false, false);
-        //TournamentGame.RunGame(0.25, false, true);
-        //TournamentGame.RunGame(0.25, true, false);
-        TournamentGame.RunGame(0.25, true, true);
-        //TournamentGame.RunGame(0.5, false, true);
-        //TournamentGame.RunGame(0.5, true, false);
-        TournamentGame.RunGame(0.5, true, true);
+        new TournamentGame(0, false, false).RunGame();
+        //new TournamentGame(0.25, false, true).RunGame();
+        //new TournamentGame(0.25, true, false).RunGame();
+        new TournamentGame(0.25, true, true).RunGame();
+        //new TournamentGame(0.5, false, true).RunGame();
+        //new TournamentGame(0.5, true, false).RunGame();
+        new TournamentGame(0.5, true, true).RunGame();
         break;
     case GameType.Population:
-        PopulationGame.RunGame(false, false);
-        //PopulationGame.RunGame(true, true);
+        new PopulationGame(false).RunGame();
+        //new PopulationGame(true).RunGame();
         break;
     default:
         throw new NotImplementedException($"Game type not implemented: {gameType}");

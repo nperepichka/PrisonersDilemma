@@ -1,11 +1,12 @@
-﻿using Gameplay.Enums;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class GameField(params IStrategy[] strategies) : Abstracts.GameField(strategies)
+    internal class GameField(Options options, params IStrategy[] strategies) : Abstracts.GameField(options, strategies)
     {
-        public override void DoSteps()
+        public void DoSteps()
         {
             Parallel.ForEach(Actions, actions =>
             {
@@ -22,10 +23,10 @@ namespace Gameplay.Games.Tournament
 
                     var action1 = ShouldDoRandomAction()
                         ? (GameAction)Randomizer.Next(2)
-                        : s1.DoAction(strategy1Actions, strategy2Actions, strategy1Cache, step);
+                        : s1.DoAction(strategy1Actions, strategy2Actions, strategy1Cache, step, Options);
                     var action2 = ShouldDoRandomAction()
                         ? (GameAction)Randomizer.Next(2)
-                        : s2.DoAction(strategy2Actions, strategy1Actions, strategy2Cache, step);
+                        : s2.DoAction(strategy2Actions, strategy1Actions, strategy2Cache, step, Options);
 
                     var action1Intensive = CalculateActionIntensive(s1, action1, strategy1Actions, strategy2Actions);
                     var action2Intensive = CalculateActionIntensive(s2, action2, strategy2Actions, strategy1Actions);
@@ -45,7 +46,7 @@ namespace Gameplay.Games.Tournament
 
                     actions.AddAction(action1Item, action2Item);
 
-                    if (actions.ShouldStopTournament())
+                    if (actions.ShouldStopTournament(options))
                     {
                         break;
                     }

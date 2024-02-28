@@ -1,13 +1,21 @@
-﻿using Gameplay.Strategies;
+﻿using Gameplay.Games.Helpers;
+using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
 {
-    internal static class Game
+    internal class Game(bool flexible)
     {
-        public static void RunGame(bool humaneFlexible, bool selfishFlexible)
+        private Options Options { get; set; } = new Options(flexible);
+
+        public void RunGame()
         {
-            // TODO: implement
+            Console.WriteLine($"Flexible: {Options.f:0.00}   Seed: {Options.Seed:0.00}");
+
+            var gameStrategies = StrategiesBuilder.GetAllStrategies();
+            var gameField = new GameField(Options, gameStrategies);
+
+            gameField.DoStep();
         }
     }
 }

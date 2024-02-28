@@ -1,5 +1,5 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
@@ -8,14 +8,14 @@ namespace Gameplay.Strategies
     {
         public override bool Selfish => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
+        public override GameAction DoAction(ActionParams actionParams)
         {
-            if (step <= 11)
+            if (actionParams.Step <= 11)
             {
                 return GameAction.Cooperate;
             }
 
-            var opponentCooperated = opponentActions.TakeLast(10).Count(_ => _.Action == GameAction.Cooperate);
+            var opponentCooperated = actionParams.OpponentActions.TakeLast(10).Count(_ => _.Action == GameAction.Cooperate);
             return Randomizer.Next(10) < opponentCooperated - 1 ? GameAction.Cooperate : GameAction.Defect;
         }
     }

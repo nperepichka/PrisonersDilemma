@@ -1,5 +1,5 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
@@ -15,10 +15,10 @@ namespace Gameplay.Strategies
     {
         public override bool Selfish => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
+        public override GameAction DoAction(ActionParams actionParams)
         {
-            var defectsCount = opponentActions.Count(_ => _.Action == GameAction.Defect);
-            return step <= 10 || defectsCount > 0 && defectsCount * 3 < step
+            var defectsCount = actionParams.OpponentActions.Count(_ => _.Action == GameAction.Defect);
+            return actionParams.Step <= 10 || defectsCount > 0 && defectsCount * 3 < actionParams.Step
                 ? GameAction.Cooperate
                 : GameAction.Defect;
         }

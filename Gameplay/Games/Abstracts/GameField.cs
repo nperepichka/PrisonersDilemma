@@ -1,19 +1,22 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Abstracts
 {
-    internal abstract class GameField : IDisposable
+    internal abstract class GameField
     {
-        public GameField(params IStrategy[] strategies)
+        public GameField(Options options, params IStrategy[] strategies)
         {
+            Options = options;
             Strategies = [];
             Actions = [];
             AddStrategies(strategies);
         }
 
         protected readonly Random Randomizer = new();
+
+        protected Options Options { get; private set; }
 
         public List<IStrategy> Strategies { get; private set; }
 
@@ -37,9 +40,7 @@ namespace Gameplay.Games.Abstracts
             }
         }
 
-        public abstract void DoSteps();
-
-        protected static GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
+        protected GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
         {
             if (!Options.SelfishFlexible && strategy.Selfish || !Options.HumaneFlexible && !strategy.Selfish)
             {
@@ -51,7 +52,7 @@ namespace Gameplay.Games.Abstracts
             return lastOpponentAction?.Action != action || lastOwnAction?.Action != action ? GameActionIntensive.Low : GameActionIntensive.Normal;
         }
 
-        protected static double CalculateScore(GameAction ownAction, GameActionIntensive ownActionIntensive, GameAction oppositeAction, GameActionIntensive oppositeActionIntensive)
+        protected double CalculateScore(GameAction ownAction, GameActionIntensive ownActionIntensive, GameAction oppositeAction, GameActionIntensive oppositeActionIntensive)
         {
             double score = ownAction == GameAction.Cooperate
                 ? oppositeAction == GameAction.Cooperate ? Options.C : Options.c
@@ -102,7 +103,7 @@ namespace Gameplay.Games.Abstracts
             return score;
         }
 
-        private static double GetScoreMod(GameActionIntensive actionIntensive)
+        private double GetScoreMod(GameActionIntensive actionIntensive)
         {
             return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
         }
@@ -110,13 +111,6 @@ namespace Gameplay.Games.Abstracts
         protected bool ShouldDoRandomAction()
         {
             return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100;
-        }
-
-        public void Dispose()
-        {
-            Strategies = null;
-            Actions = null;
-            GC.Collect();
         }
     }
 }

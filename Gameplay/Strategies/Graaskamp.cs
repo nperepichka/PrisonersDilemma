@@ -1,5 +1,5 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
@@ -11,38 +11,38 @@ namespace Gameplay.Strategies
     {
         public override bool Selfish => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
+        public override GameAction DoAction(ActionParams actionParams)
         {
-            if (step == 51)
+            if (actionParams.Step == 51)
             {
                 return GameAction.Defect;
             }
 
-            if (step <= 56)
+            if (actionParams.Step <= 56)
             {
-                var lastOpponentAction = opponentActions.LastOrDefault();
+                var lastOpponentAction = actionParams.OpponentActions.LastOrDefault();
                 return lastOpponentAction?.Action ?? GameAction.Cooperate;
             }
 
-            var isOponentRandom = IsOponentRandom(opponentActions);
+            var isOponentRandom = IsOponentRandom(actionParams.OpponentActions);
             if (isOponentRandom)
             {
                 return GameAction.Defect;
             }
 
-            var isOponentTitForTat = IsOponentTitForTat(ownActions, opponentActions);
+            var isOponentTitForTat = IsOponentTitForTat(actionParams.OwnActions, actionParams.OpponentActions);
             if (isOponentTitForTat)
             {
-                var lastOpponentAction = opponentActions.LastOrDefault();
+                var lastOpponentAction = actionParams.OpponentActions.LastOrDefault();
                 return lastOpponentAction?.Action ?? GameAction.Cooperate;
             }
 
-            if (step == GetCacheValue(cache, "next_random_defection_turn", () =>
+            if (actionParams.Step == actionParams.GetCacheValue("next_random_defection_turn", () =>
             {
-                return step + Randomizer.Next(5, 16);
+                return actionParams.Step + Randomizer.Next(5, 16);
             }))
             {
-                cache["next_random_defection_turn"] = step + Randomizer.Next(5, 16);
+                actionParams.Cache["next_random_defection_turn"] = actionParams.Step + Randomizer.Next(5, 16);
                 return GameAction.Defect;
             }
 

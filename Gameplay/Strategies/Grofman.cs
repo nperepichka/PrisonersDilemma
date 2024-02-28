@@ -1,5 +1,5 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Abstracts;
 
 namespace Gameplay.Strategies
@@ -8,11 +8,11 @@ namespace Gameplay.Strategies
     {
         public override bool Nice => true;
 
-        public override GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step)
+        public override GameAction DoAction(ActionParams actionParams)
         {
-            var lastOwnAction = ownActions.LastOrDefault();
-            var lastOpponentAction = opponentActions.LastOrDefault();
-            return step == 1 || lastOwnAction?.Action == lastOpponentAction?.Action
+            var lastOwnAction = actionParams.OwnActions.LastOrDefault();
+            var lastOpponentAction = actionParams.OpponentActions.LastOrDefault();
+            return actionParams.Step == 1 || lastOwnAction?.Action == lastOpponentAction?.Action
                 ? GameAction.Cooperate
                 : (Randomizer.Next(7) < 2 ? GameAction.Cooperate : GameAction.Defect);
         }

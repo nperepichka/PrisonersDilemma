@@ -1,18 +1,14 @@
 ﻿namespace Gameplay.Games.Population
 {
-    internal static class Options
+    internal class Options(bool flexible) : Abstracts.Options
     {
-        // D > C > d > c
-        // 2C > D + c
-        public const int D = 5;
-        public const int C = 3;
-        public const int d = 1;
-        public const int c = 0;
-
         // Flexibility of interaction (f) - the author's idea of strategy research
-        public static bool HumaneFlexible = true;
-        public static bool SelfishFlexible = true;
+        public override bool HumaneFlexible => f != 0;
+        public override bool SelfishFlexible => f != 0;
 
-        public const double f = 0.25;
+        public override double f => flexible ? base.f : 0;
+
+        public readonly int MaxPopulation = 200;
+        //public const int PopulationTrimPercentage = 1;
     }
 }

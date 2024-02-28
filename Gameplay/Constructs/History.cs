@@ -1,13 +1,14 @@
 ﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Games.Tournament
+namespace Gameplay.Constructs
 {
     internal class History(IStrategy strategy1, IStrategy strategy2)
     {
-        public string Strategy1Name { get; private set; } = strategy1.Name;
+        private string Strategy1Name { get; set; } = strategy1.Name;
 
-        public string Strategy2Name { get; private set; } = strategy2.Name;
+        private string Strategy2Name { get; set; } = strategy2.Name;
 
         public Guid Strategy1Id { get; private set; } = strategy1.Id;
 
@@ -24,6 +25,11 @@ namespace Gameplay.Games.Tournament
         private Dictionary<string, object> Strategy1Cache { get; set; } = [];
 
         private Dictionary<string, object> Strategy2Cache { get; set; } = [];
+
+        public bool ContainsStrategy(string strategyName)
+        {
+            return Strategy1Name == strategyName || Strategy2Name == strategyName;
+        }
 
         private double GetScoresSum(string strategyName)
         {
@@ -116,30 +122,25 @@ namespace Gameplay.Games.Tournament
         }
 
         // Author's idea for determining the optimal number of iterations, based on the idea from the 2nd Axelrod tournament
-        public bool ShouldStopTournament()
+        public bool ShouldStopTournament(Options options)
         {
             var step = GetStepsCount();
 
-            if (Options.Steps.HasValue)
-            {
-                return step == Options.Steps;
-            }
-
-            var cooperationScore1 = GetScoresSum(Strategy1Id) * 100 / (step * Options.C);
-            var cooperationScore2 = GetScoresSum(Strategy2Id) * 100 / (step * Options.C);
+            var cooperationScore1 = GetScoresSum(Strategy1Id) * 100 / (step * options.C);
+            var cooperationScore2 = GetScoresSum(Strategy2Id) * 100 / (step * options.C);
             CooperationScores1.Add(cooperationScore1);
             CooperationScores2.Add(cooperationScore2);
 
-            if (step < Options.MinSteps)
+            if (step < options.MinSteps)
             {
                 return false;
             }
 
-            for (var i = step - 2; i >= step - Options.SameLastCooperationScores; i--)
+            for (var i = step - 2; i >= step - options.SameLastCooperationScores; i--)
             {
                 if (
-                    Math.Abs(cooperationScore1 - CooperationScores1.ElementAt(i)) > Options.ValuableCooperationScoreNumber
-                    || Math.Abs(cooperationScore2 - CooperationScores2.ElementAt(i)) > Options.ValuableCooperationScoreNumber
+                    Math.Abs(cooperationScore1 - CooperationScores1.ElementAt(i)) > options.ValuableCooperationScoreNumber
+                    || Math.Abs(cooperationScore2 - CooperationScores2.ElementAt(i)) > options.ValuableCooperationScoreNumber
                     )
                 {
                     return false;

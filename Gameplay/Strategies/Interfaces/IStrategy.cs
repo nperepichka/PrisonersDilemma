@@ -1,5 +1,6 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
+using Gameplay.Games.Abstracts;
 
 namespace Gameplay.Strategies.Interfaces
 {
@@ -13,6 +14,6 @@ namespace Gameplay.Strategies.Interfaces
 
         bool Nice { get; }
 
-        GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step);
+        GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step, Options options);
     }
 }

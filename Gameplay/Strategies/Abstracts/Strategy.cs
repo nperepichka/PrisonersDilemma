@@ -1,5 +1,6 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
+using Gameplay.Games.Abstracts;
 using Gameplay.Strategies.Interfaces;
 using System.Diagnostics;
 
@@ -21,24 +22,13 @@ namespace Gameplay.Strategies.Abstracts
 
         public virtual bool Nice => false;
 
-        public abstract GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step);
+        protected static readonly Random Randomizer = new();
 
-        protected readonly Random Randomizer = new();
-
-        protected static HistoryItem? GetLastItem(List<HistoryItem> list, int indexFromEnd)
+        public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step, Options options)
         {
-            return list.ElementAtOrDefault(list.Count - indexFromEnd);
+            return DoAction(new ActionParams(ownActions, opponentActions, cache, step, options));
         }
 
-        protected static T GetCacheValue<T>(Dictionary<string, object> cache, string key, Func<T> initFunc)
-        {
-            if (cache.TryGetValue(key, out var val) && val is T tval)
-            {
-                return tval;
-            }
-            var res = initFunc();
-            cache.Add(key, res);
-            return res;
-        }
+        public abstract GameAction DoAction(ActionParams actionParams);
     }
 }
