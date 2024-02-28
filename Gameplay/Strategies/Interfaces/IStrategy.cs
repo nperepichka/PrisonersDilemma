@@ -15,5 +15,7 @@ namespace Gameplay.Strategies.Interfaces
         bool Nice { get; }
 
         GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step, Options options);
+
+        IStrategy Clone();
     }
 }

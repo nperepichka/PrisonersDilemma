@@ -10,7 +10,9 @@ namespace Gameplay.Strategies.Abstracts
     {
         protected Strategy()
         {
-            Name = new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType?.Name ?? "Unknown";
+            Type = (new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType)
+                ?? throw new TypeLoadException("Unknow stratedy type");
+            Name = Type.Name;
             Id = Guid.NewGuid();
         }
 
@@ -24,11 +26,20 @@ namespace Gameplay.Strategies.Abstracts
 
         protected static readonly Random Randomizer = new();
 
+        private Type Type { get; set; }
+
         public GameAction DoAction(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step, Options options)
         {
             return DoAction(new ActionParams(ownActions, opponentActions, cache, step, options));
         }
 
         public abstract GameAction DoAction(ActionParams actionParams);
+
+        public IStrategy Clone()
+        {
+            return Activator.CreateInstance(Type) is IStrategy strategy
+                ? strategy
+                : throw new TypeLoadException("Unknow stratedy type");
+        }
     }
 }

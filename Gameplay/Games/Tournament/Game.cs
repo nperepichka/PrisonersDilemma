@@ -45,7 +45,7 @@ namespace Gameplay.Games.Tournament
                 var succeedFlag = s.Absolute >= 60 && s.Cooperation >= 85 ? "*" : "";
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
-                var flagsStr = string.Format("{0,2}{1,2}{2,2}{3,2}", succeedFlag, niceFlag, selfishFlag, s.AggressiveNumber);
+                var flagsStr = $"{succeedFlag,2}{niceFlag,2}{selfishFlag,2}{s.AggressiveNumber,2}";
                 Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr));
             }
 

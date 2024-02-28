@@ -8,7 +8,7 @@
 
         public override double f => flexible ? base.f : 0;
 
-        public readonly int MaxPopulation = 200;
+        public readonly int MaxPopulation = 1000;
         //public const int PopulationTrimPercentage = 1;
     }
 }

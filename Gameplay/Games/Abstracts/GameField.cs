@@ -14,7 +14,7 @@ namespace Gameplay.Games.Abstracts
             AddStrategies(strategies);
         }
 
-        protected readonly Random Randomizer = new();
+        private readonly Random Randomizer = new();
 
         protected Options Options { get; private set; }
 
@@ -22,8 +22,13 @@ namespace Gameplay.Games.Abstracts
 
         public List<History> Actions { get; private set; }
 
-        private void AddStrategies(params IStrategy[] strategies)
+        private void AddStrategies(IStrategy[] strategies)
         {
+            if (strategies == null)
+            {
+                return;
+            }
+
             foreach (var strategy in strategies)
             {
                 if (Strategies.Any(_ => _.Id == strategy.Id))
@@ -108,9 +113,11 @@ namespace Gameplay.Games.Abstracts
             return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
         }
 
-        protected bool ShouldDoRandomAction()
+        protected GameAction DoDoActionOrRandom(Func<GameAction> doAction)
         {
-            return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100;
+            return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100
+                ? (GameAction)Randomizer.Next(2)
+                : doAction();
         }
     }
 }
