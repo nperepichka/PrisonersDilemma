@@ -3,8 +3,8 @@ using System.Diagnostics;
 using PopulationGame = Gameplay.Games.Population.Game;
 using TournamentGame = Gameplay.Games.Tournament.Game;
 
-var gameType = GameType.Tournament;
-//var gameType = GameType.Population;
+//var gameType = GameType.Tournament;
+var gameType = GameType.Population;
 
 var watch = Stopwatch.StartNew();
 

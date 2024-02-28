@@ -6,7 +6,7 @@ namespace Gameplay.Games.Population
 {
     internal class Game(bool flexible)
     {
-        private const string TableFormat = "{0,6}{1,10}{2,8}{3,27}{4,7}";
+        private const string TableFormat = "{0,10}{1,10}{2,8}{3,27}{4,7}";
 
         private Options Options { get; set; } = new Options(flexible);
 
@@ -28,7 +28,7 @@ namespace Gameplay.Games.Population
                     })
                     .Where(_ => _ != Guid.Empty)
                     .Distinct(),
-                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)),
+                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)).ToList(),
             }).Select(s => new
             {
                 s.Name,
@@ -37,11 +37,12 @@ namespace Gameplay.Games.Population
                 Count = s.Strategies.Count(),
                 Score = s.Strategies.Sum(ss => s.Actions
                     .Where(a => a.ContainsStrategy(ss))
-                    .Average(_ => _.GetScoresSum(ss))
+                    .Sum(_ => _.GetStrategyLastScore(ss))
                 ),
                 Children = s.Strategies.Sum(ss => (int)s.Actions
                     .Where(a => a.ContainsStrategy(ss))
-                    .Average(_ => _.GetScoresSum(ss))
+                    .Select(a => a.GetStrategyLastScore(ss))
+                    .Average()
                 ),
             }).OrderByDescending(_ => _.Children);
 
@@ -49,7 +50,7 @@ namespace Gameplay.Games.Population
 
             Console.WriteLine($"Step: {Step}   Population: {population}");
             Console.WriteLine(string.Format(TableFormat, "Score", "Children", "Count", "Name", "Flags"));
-            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine("---------------------------------------------------------------");
 
             foreach (var s in score)
             {

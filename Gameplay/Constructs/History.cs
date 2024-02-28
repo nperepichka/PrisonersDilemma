@@ -72,6 +72,24 @@ namespace Gameplay.Constructs
             return score;
         }
 
+        public double GetStrategyLastScore(Guid strategyId)
+        {
+            double score = 0;
+            if (Strategy1Id == strategyId)
+            {
+                score = Strategy1Actions.Last().Score;
+                if (Strategy2Id == strategyId)
+                {
+                    score = (score + Strategy2Actions.Last().Score) * 0.5;
+                }
+            }
+            else if (Strategy2Id == strategyId)
+            {
+                score = Strategy2Actions.Last().Score;
+            }
+            return score;
+        }
+
         public double GetScore(string strategyName)
         {
             return GetScoresSum(strategyName) * 100 / GetStepsCount();

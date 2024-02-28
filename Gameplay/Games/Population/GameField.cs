@@ -10,6 +10,8 @@ namespace Gameplay.Games.Population
             AddStrategies(strategies, actions);
         }
 
+        protected override bool CanCommunicateWithItself => false;
+
         private void AddStrategies(IStrategy[] strategies, List<History> actions)
         {
             var allStrategies = actions.SelectMany(_ => new[] {
@@ -29,7 +31,8 @@ namespace Gameplay.Games.Population
                     _.Name,
                     Children = (int)actions
                         .Where(a => a.ContainsStrategy(_.Id))
-                        .Average(a => a.GetScoresSum(_.Id)),
+                        .Select(a => a.GetStrategyLastScore(_.Id))
+                        .Average(),
                 });
 
             var hash = new Dictionary<Guid, Guid>();
