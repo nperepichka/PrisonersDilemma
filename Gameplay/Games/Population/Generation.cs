@@ -8,6 +8,8 @@
 
         public double Score { get; set; }
 
+        public double Total { get; set; }
+
         public int Children { get; set; }
     }
 }

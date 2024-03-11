@@ -30,11 +30,14 @@ namespace Gameplay.Games.Population
                     Name = _.Name,
                     Score = actions
                         .Where(a => a.ContainsStrategy(_.Id))
-                        .Select(a => a.GetStrategyLastScore(_.Id))
-                        .Sum(),
+                        .Sum(a => a.GetStrategyLastScore(_.Id)),
+                    Total = actions
+                        .Where(a => a.ContainsStrategy(_.Id))
+                        .Sum(a => a.GetScoresSum(_.Id)),
                     Children = 1,
                 })
                 .OrderByDescending(_ => _.Score)
+                .ThenByDescending(_ => _.Total)
                 .ThenBy(_ => Randomizer.Next())
                 .ToArray();
 
