@@ -7,10 +7,10 @@ namespace Gameplay.Games.Population
     {
         public GameField(Options options, int step, IStrategy[] strategies, List<History> actions) : this(options, step)
         {
-            AddStrategies(strategies, actions);
+            AddStrategies(strategies, actions, step <= options.StabilizationSteps);
         }
 
-        private void AddStrategies(IStrategy[] strategies, List<History> actions)
+        private void AddStrategies(IStrategy[] strategies, List<History> actions, bool isStabilization)
         {
             // Moran process will be used to get next generation
             var allStrategies = actions.SelectMany(_ => new[] {
@@ -41,7 +41,7 @@ namespace Gameplay.Games.Population
             var birth = allStrategies.First();
             var death = allStrategies.Last();
 
-            if (birth.Score > death.Score)
+            if (birth.Score > death.Score && !isStabilization)
             {
                 birth.Children = 2;
                 death.Children = 0;
@@ -49,6 +49,7 @@ namespace Gameplay.Games.Population
                 if (death.Name == "Smart")
                 {
                     // TODO: check here if "actions" contains right amount of records for each strategy
+                    // TODO: why score of ESS is count*C ?
                 }
             }
 

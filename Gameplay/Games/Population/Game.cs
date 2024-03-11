@@ -1,12 +1,13 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Games.Helpers;
 using Gameplay.Strategies.Interfaces;
+using System.Numerics;
 
 namespace Gameplay.Games.Population
 {
     internal class Game(bool flexible)
     {
-        private const string TableFormat = "{0,10}{1,8}{2,27}{3,7}";
+        private const string TableFormat = "{0,10}{1,8}{2,8}{3,27}{4,7}";
 
         private Options Options { get; set; } = new Options(flexible);
 
@@ -28,7 +29,7 @@ namespace Gameplay.Games.Population
                     })
                     .Where(_ => _ != Guid.Empty)
                     .Distinct(),
-                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)).ToList(),
+                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)).ToArray(),
             }).Select(s => new
             {
                 s.Name,
@@ -38,21 +39,24 @@ namespace Gameplay.Games.Population
                 Score = s.Strategies.Sum(ss => s.Actions
                     .Where(a => a.ContainsStrategy(ss))
                     .Select(a => a.GetStrategyLastScore(ss))
-                    .Sum()
-                ),
+                    .Sum()),
+                Total = s.Strategies.Sum(ss => s.Actions
+                    .Where(a => a.ContainsStrategy(ss))
+                    .Select(a => a.GetScoresSum(ss))
+                    .Sum()),
             }).OrderByDescending(_ => _.Score)
             .ToArray();
 
             Console.WriteLine($"Step: {Step}");
-            Console.WriteLine(string.Format(TableFormat, "Score", "Count", "Name", "Flags"));
-            Console.WriteLine("-----------------------------------------------------");
+            Console.WriteLine(string.Format(TableFormat, "Total", "Score", "Count", "Name", "Flags"));
+            Console.WriteLine("-------------------------------------------------------------");
 
             foreach (var s in score)
             {
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
                 var flagsStr = $"{niceFlag,2}{selfishFlag,2}";
-                Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", s.Count, s.Name, flagsStr));
+                Console.WriteLine(string.Format(TableFormat, $"{s.Total:0.00}", $"{s.Score:0.00}", s.Count, s.Name, flagsStr));
             }
 
             Console.WriteLine();

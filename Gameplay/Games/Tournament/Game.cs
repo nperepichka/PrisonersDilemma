@@ -19,13 +19,13 @@ namespace Gameplay.Games.Tournament
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)),
+                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)).ToArray(),
             }).Select(s => new
             {
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Score = s.Actions.Average(_ => _.GetScore(s.Name)),
+                Score = s.Actions.Average(_ => _.GetScore(s.Name, Options.MinSteps)),
                 AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {

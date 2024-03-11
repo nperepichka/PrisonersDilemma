@@ -1,6 +1,6 @@
 ﻿namespace Gameplay.Games.Population
 {
-    internal class Options(bool flexible) : Abstracts.Options
+    internal class Options(bool flexible, int stabilizationSteps = 0) : Abstracts.Options
     {
         public override int D => 7;
         public override int C => 5;
@@ -12,5 +12,7 @@
         public override bool SelfishFlexible => f != 0;
 
         public override double f => flexible ? base.f : 0;
+
+        public readonly int StabilizationSteps = stabilizationSteps;
     }
 }
