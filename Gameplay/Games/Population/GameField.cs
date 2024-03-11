@@ -45,12 +45,6 @@ namespace Gameplay.Games.Population
             {
                 birth.Children = 2;
                 death.Children = 0;
-
-                if (death.Name == "Smart")
-                {
-                    // TODO: check here if "actions" contains right amount of records for each strategy
-                    // TODO: why score of ESS is count*C ?
-                }
             }
 
             var hash = new Dictionary<Guid, Guid>();

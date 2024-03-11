@@ -1,7 +1,6 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Games.Helpers;
 using Gameplay.Strategies.Interfaces;
-using System.Numerics;
 
 namespace Gameplay.Games.Population
 {
@@ -14,6 +13,10 @@ namespace Gameplay.Games.Population
         private IEnumerable<IStrategy> Strategies { get; set; }
 
         private int Step { get; set; } = 0;
+
+        private string StateSnapshot { get; set; } = null;
+
+        private int SameStateSnapshot { get; set; } = 1;
 
         private bool WriteScores(List<History> actions)
         {
@@ -60,7 +63,30 @@ namespace Gameplay.Games.Population
             }
 
             Console.WriteLine();
-            return score.First().Count == Strategies.Count();
+
+            if (score.First().Count == Strategies.Count())
+            {
+                return true;
+            }
+
+            var stateSnapshot = string.Join("|", score.Where(_ => _.Score > 0).Select(_ => $"{_.Name}/{_.Score:0.00}"));
+            if (stateSnapshot == StateSnapshot)
+            {
+                SameStateSnapshot++;
+                if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                StateSnapshot = stateSnapshot;
+                SameStateSnapshot = 1;
+            }
+
+            return false;
+
+            // TODO: why score of ESS is count*C ?
         }
 
         public void RunGame()
@@ -85,7 +111,7 @@ namespace Gameplay.Games.Population
                 actions = gameField.Actions;
                 var shouldStop = WriteScores(actions);
 
-                if (Step == 100 || shouldStop)
+                if (shouldStop)
                 {
                     break;
                 }

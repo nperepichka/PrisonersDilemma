@@ -14,5 +14,7 @@
         public override double f => flexible ? base.f : 0;
 
         public readonly int StabilizationSteps = stabilizationSteps;
+
+        public readonly int SamePopulationStepsToStop = 5;
     }
 }
