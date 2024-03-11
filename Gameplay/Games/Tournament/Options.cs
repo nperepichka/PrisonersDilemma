@@ -17,7 +17,6 @@
 
         public override double f => flexibility;
 
-        public readonly int MinSteps = 100;
         public readonly int SameLastCooperationScores = 10;
         public readonly double ValuableCooperationScoreNumber = 0.01;
         public readonly int Repeats = 1;

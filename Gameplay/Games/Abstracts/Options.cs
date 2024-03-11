@@ -17,5 +17,7 @@
 
         // Chance of strategy to play randomly (0.00% - 100.00%)
         public readonly double Seed = 0;
+
+        public readonly int MinSteps = 100;
     }
 }

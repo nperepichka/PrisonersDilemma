@@ -66,16 +66,11 @@ namespace Gameplay.Games.Population
 
             if (Step > Options.StabilizationSteps)
             {
-                if (score.First().Count == Strategies.Count())
-                {
-                    return true;
-                }
-
                 var stateSnapshot = string.Join("|", score.Where(_ => _.Score > 0).Select(_ => $"{_.Name}:{_.Score:0.00}"));
                 if (stateSnapshot == StateSnapshot)
                 {
                     SameStateSnapshot++;
-                    if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                    if (SameStateSnapshot >= Options.SamePopulationStepsToStop && Step >= Options.MinSteps)
                     {
                         return true;
                     }

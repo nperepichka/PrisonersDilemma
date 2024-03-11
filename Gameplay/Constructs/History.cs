@@ -90,7 +90,7 @@ namespace Gameplay.Constructs
             return score;
         }
 
-        public double GetScore(string strategyName, int minSteps = 100)
+        public double GetScore(string strategyName, int minSteps)
         {
             return GetScoresSum(strategyName) * minSteps / GetStepsCount();
         }
