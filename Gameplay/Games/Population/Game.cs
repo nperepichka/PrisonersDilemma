@@ -64,24 +64,27 @@ namespace Gameplay.Games.Population
 
             Console.WriteLine();
 
-            if (score.First().Count == Strategies.Count())
+            if (Step > Options.StabilizationSteps)
             {
-                return true;
-            }
-
-            var stateSnapshot = string.Join("|", score.Where(_ => _.Score > 0).Select(_ => $"{_.Name}/{_.Score:0.00}"));
-            if (stateSnapshot == StateSnapshot)
-            {
-                SameStateSnapshot++;
-                if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                if (score.First().Count == Strategies.Count())
                 {
                     return true;
                 }
-            }
-            else
-            {
-                StateSnapshot = stateSnapshot;
-                SameStateSnapshot = 1;
+
+                var stateSnapshot = string.Join("|", score.Where(_ => _.Score > 0).Select(_ => $"{_.Name}:{_.Score:0.00}"));
+                if (stateSnapshot == StateSnapshot)
+                {
+                    SameStateSnapshot++;
+                    if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    StateSnapshot = stateSnapshot;
+                    SameStateSnapshot = 1;
+                }
             }
 
             return false;
