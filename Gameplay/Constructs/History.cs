@@ -175,7 +175,7 @@ namespace Gameplay.Constructs
 
         public History Clone(IStrategy strategy1, IStrategy strategy2, Guid strategy1OldId, Guid strategy2OldId)
         {
-            if (strategy1OldId != Strategy1Id && strategy1OldId != Strategy2Id || strategy2OldId != Strategy1Id && strategy2OldId != Strategy2Id)
+            if (!(Strategy1Id == strategy1OldId && Strategy2Id == strategy2OldId || Strategy1Id == strategy2OldId && Strategy2Id == strategy1OldId))
             {
                 throw new ArgumentException($"Invalid strategies: {strategy1OldId}, {strategy2OldId}");
             }

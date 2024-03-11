@@ -14,8 +14,6 @@ namespace Gameplay.Games.Abstracts
             AddStrategies(strategies);
         }
 
-        protected virtual bool CanCommunicateWithItself => true;
-
         protected readonly Random Randomizer = new();
 
         protected Options Options { get; private set; }
@@ -42,10 +40,7 @@ namespace Gameplay.Games.Abstracts
 
                 foreach (var s in Strategies)
                 {
-                    if (CanCommunicateWithItself || s.Id != strategy.Id)
-                    {
-                        Actions.Add(new History(s, strategy));
-                    }
+                    Actions.Add(new History(s, strategy));
                 }
             }
         }

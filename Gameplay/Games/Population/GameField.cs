@@ -10,8 +10,6 @@ namespace Gameplay.Games.Population
             AddStrategies(strategies, actions);
         }
 
-        protected override bool CanCommunicateWithItself => false;
-
         private void AddStrategies(IStrategy[] strategies, List<History> actions)
         {
             // Moran process will be used to get next generation
@@ -47,9 +45,12 @@ namespace Gameplay.Games.Population
             {
                 birth.Children = 2;
                 death.Children = 0;
-            }
 
-            // TODO: fix history clone
+                if (death.Name == "Smart")
+                {
+                    // TODO: check here if "actions" contains right amount of records for each strategy
+                }
+            }
 
             var hash = new Dictionary<Guid, Guid>();
 
@@ -70,14 +71,12 @@ namespace Gameplay.Games.Population
 
                     foreach (var s in Strategies)
                     {
-                        if (s.Id != strategy.Id)
-                        {
-                            var sOldId = hash[s.Id];
-                            var history = actions
-                                .First(_ => _.ContainsStrategy(strategyInfo.Id) && _.ContainsStrategy(sOldId))
-                                .Clone(s, strategy, sOldId, strategyInfo.Id);
-                            Actions.Add(history);
-                        }
+                        var sOldId = hash[s.Id];
+                        var oldHistory = actions
+                            .First(_ => _.Strategy1Id == strategyInfo.Id && _.Strategy2Id == sOldId || _.Strategy2Id == strategyInfo.Id && _.Strategy1Id == sOldId);
+                        var history = oldHistory
+                            .Clone(s, strategy, sOldId, strategyInfo.Id);
+                        Actions.Add(history);
                     }
                 }
             }
