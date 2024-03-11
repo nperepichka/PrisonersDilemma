@@ -21,7 +21,7 @@ namespace Gameplay.Games.Helpers
             new Tullock(),
             new Graaskamp(),
             new Downing(),
-            new Smart()
+            new Smart(),
         ];
     }
 }

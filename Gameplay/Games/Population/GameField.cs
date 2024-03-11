@@ -14,6 +14,7 @@ namespace Gameplay.Games.Population
 
         private void AddStrategies(IStrategy[] strategies, List<History> actions)
         {
+            // Moran process will be used to get next generation
             var allStrategies = actions.SelectMany(_ => new[] {
                     new {
                         Name = _.Strategy1Name,
@@ -25,15 +26,30 @@ namespace Gameplay.Games.Population
                     }
                 })
                 .DistinctBy(_ => _.Id)
-                .Select(_ => new
+                .Select(_ => new Generation()
                 {
-                    _.Id,
-                    _.Name,
-                    Children = (int)actions
+                    Id = _.Id,
+                    Name = _.Name,
+                    Score = actions
                         .Where(a => a.ContainsStrategy(_.Id))
                         .Select(a => a.GetStrategyLastScore(_.Id))
-                        .Average(),
-                });
+                        .Sum(),
+                    Children = 1,
+                })
+                .OrderByDescending(_ => _.Score)
+                .ThenBy(_ => Randomizer.Next())
+                .ToArray();
+
+            var birth = allStrategies.First();
+            var death = allStrategies.Last();
+
+            if (birth.Score > death.Score)
+            {
+                birth.Children = 2;
+                death.Children = 0;
+            }
+
+            // TODO: fix history clone
 
             var hash = new Dictionary<Guid, Guid>();
 

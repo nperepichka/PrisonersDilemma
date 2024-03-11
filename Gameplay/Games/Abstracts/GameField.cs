@@ -16,7 +16,7 @@ namespace Gameplay.Games.Abstracts
 
         protected virtual bool CanCommunicateWithItself => true;
 
-        private readonly Random Randomizer = new();
+        protected readonly Random Randomizer = new();
 
         protected Options Options { get; private set; }
 

@@ -6,7 +6,7 @@ namespace Gameplay.Games.Population
 {
     internal class Game(bool flexible)
     {
-        private const string TableFormat = "{0,10}{1,10}{2,8}{3,27}{4,7}";
+        private const string TableFormat = "{0,10}{1,8}{2,27}{3,7}";
 
         private Options Options { get; set; } = new Options(flexible);
 
@@ -14,7 +14,7 @@ namespace Gameplay.Games.Population
 
         private int Step { get; set; } = 0;
 
-        private int WriteScores(List<History> actions)
+        private bool WriteScores(List<History> actions)
         {
             var score = Strategies.Select(s => new
             {
@@ -37,31 +37,26 @@ namespace Gameplay.Games.Population
                 Count = s.Strategies.Count(),
                 Score = s.Strategies.Sum(ss => s.Actions
                     .Where(a => a.ContainsStrategy(ss))
-                    .Sum(_ => _.GetStrategyLastScore(ss))
-                ),
-                Children = s.Strategies.Sum(ss => (int)s.Actions
-                    .Where(a => a.ContainsStrategy(ss))
                     .Select(a => a.GetStrategyLastScore(ss))
-                    .Average()
+                    .Sum()
                 ),
-            }).OrderByDescending(_ => _.Children);
+            }).OrderByDescending(_ => _.Score)
+            .ToArray();
 
-            var population = score.Sum(s => s.Children);
-
-            Console.WriteLine($"Step: {Step}   Population: {population}");
-            Console.WriteLine(string.Format(TableFormat, "Score", "Children", "Count", "Name", "Flags"));
-            Console.WriteLine("---------------------------------------------------------------");
+            Console.WriteLine($"Step: {Step}");
+            Console.WriteLine(string.Format(TableFormat, "Score", "Count", "Name", "Flags"));
+            Console.WriteLine("-----------------------------------------------------");
 
             foreach (var s in score)
             {
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
                 var flagsStr = $"{niceFlag,2}{selfishFlag,2}";
-                Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", s.Children, s.Count, s.Name, flagsStr));
+                Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", s.Count, s.Name, flagsStr));
             }
 
             Console.WriteLine();
-            return population;
+            return score.First().Count == Strategies.Count();
         }
 
         public void RunGame()
@@ -72,10 +67,9 @@ namespace Gameplay.Games.Population
             var gameStrategies = StrategiesBuilder.GetAllStrategies();
             Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
-            var population = Strategies.Count();
             List<History> actions = null;
 
-            while (population < Options.MaxPopulation)
+            while (true)
             {
                 Step++;
 
@@ -85,7 +79,12 @@ namespace Gameplay.Games.Population
                 gameField.DoStep();
 
                 actions = gameField.Actions;
-                population = WriteScores(actions);
+                var shouldStop = WriteScores(actions);
+
+                if (Step == 100 || shouldStop)
+                {
+                    break;
+                }
             }
         }
     }
