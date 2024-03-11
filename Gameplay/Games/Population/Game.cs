@@ -101,6 +101,8 @@ namespace Gameplay.Games.Population
             {
                 Step++;
 
+                // TODO: rewrite this logic - on each step Tournament should be playead for each pair
+
                 var gameField = actions == null
                     ? new GameField(Options, Step, gameStrategies)
                     : new GameField(Options, Step, gameStrategies, actions);
