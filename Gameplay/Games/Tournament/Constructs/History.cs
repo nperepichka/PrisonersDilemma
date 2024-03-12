@@ -1,8 +1,7 @@
 ﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Constructs
+namespace Gameplay.Games.Tournament.Constructs
 {
     internal class History(IStrategy strategy1, IStrategy strategy2)
     {
@@ -26,32 +25,9 @@ namespace Gameplay.Constructs
 
         private Dictionary<string, object> Strategy2Cache { get; set; } = [];
 
-        public bool ContainsStrategy(string strategyName)
-        {
-            return Strategy1Name == strategyName || Strategy2Name == strategyName;
-        }
-
         public bool ContainsStrategy(Guid strategyId)
         {
             return Strategy1Id == strategyId || Strategy2Id == strategyId;
-        }
-
-        public double GetScoresSum(string strategyName)
-        {
-            double score = 0;
-            if (Strategy1Name == strategyName)
-            {
-                score = Strategy1Actions.Select(_ => _.Score).Sum();
-                if (Strategy2Name == strategyName)
-                {
-                    score = (score + Strategy2Actions.Select(_ => _.Score).Sum()) * 0.5;
-                }
-            }
-            else if (Strategy2Name == strategyName)
-            {
-                score = Strategy2Actions.Select(_ => _.Score).Sum();
-            }
-            return score;
         }
 
         public double GetScoresSum(Guid strategyId)
@@ -72,41 +48,23 @@ namespace Gameplay.Constructs
             return score;
         }
 
-        public double GetStrategyLastScore(Guid strategyId)
+        public double GetScore(Guid strategyId, int minSteps)
         {
-            double score = 0;
-            if (Strategy1Id == strategyId)
-            {
-                score = Strategy1Actions.Last().Score;
-                if (Strategy2Id == strategyId)
-                {
-                    score = (score + Strategy2Actions.Last().Score) * 0.5;
-                }
-            }
-            else if (Strategy2Id == strategyId)
-            {
-                score = Strategy2Actions.Last().Score;
-            }
-            return score;
+            return GetScoresSum(strategyId) * minSteps / GetStepsCount();
         }
 
-        public double GetScore(string strategyName, int minSteps)
-        {
-            return GetScoresSum(strategyName) * minSteps / GetStepsCount();
-        }
-
-        public int GetDefectsCount(string strategyName)
+        public int GetDefectsCount(Guid strategyId)
         {
             int n = 0;
-            if (Strategy1Name == strategyName)
+            if (Strategy1Id == strategyId)
             {
                 n = Strategy1Actions.Count(_ => _.Action == GameAction.Defect);
-                if (Strategy2Name == strategyName)
+                if (Strategy2Id == strategyId)
                 {
                     n = (n + Strategy2Actions.Count(_ => _.Action == GameAction.Defect)) / 2;
                 }
             }
-            else if (Strategy2Name == strategyName)
+            else if (Strategy2Id == strategyId)
             {
                 n = Strategy2Actions.Count(_ => _.Action == GameAction.Defect);
             }
@@ -171,24 +129,6 @@ namespace Gameplay.Constructs
             }
 
             return true;
-        }
-
-        public History Clone(IStrategy strategy1, IStrategy strategy2, Guid strategy1OldId, Guid strategy2OldId)
-        {
-            if (!(Strategy1Id == strategy1OldId && Strategy2Id == strategy2OldId || Strategy1Id == strategy2OldId && Strategy2Id == strategy1OldId))
-            {
-                throw new ArgumentException($"Invalid strategies: {strategy1OldId}, {strategy2OldId}");
-            }
-            var reverseActions = strategy1OldId != Strategy1Id;
-            return new History(strategy1, strategy2)
-            {
-                Strategy1Actions = (reverseActions ? Strategy2Actions : Strategy1Actions).ToList(),
-                Strategy2Actions = (reverseActions ? Strategy1Actions : Strategy2Actions).ToList(),
-                CooperationScores1 = (reverseActions ? CooperationScores2 : CooperationScores1).ToList(),
-                CooperationScores2 = (reverseActions ? CooperationScores1 : CooperationScores2).ToList(),
-                Strategy1Cache = (reverseActions ? Strategy2Cache : Strategy1Cache).ToDictionary(k => k.Key, v => v.Value),
-                Strategy2Cache = (reverseActions ? Strategy1Cache : Strategy2Cache).ToDictionary(k => k.Key, v => v.Value),
-            };
         }
     }
 }

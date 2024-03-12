@@ -11,13 +11,13 @@ var watch = Stopwatch.StartNew();
 switch (gameType)
 {
     case GameType.Tournament:
-        new TournamentGame(0, false, false).RunGame();
-        //new TournamentGame(0.25, false, true).RunGame();
-        //new TournamentGame(0.25, true, false).RunGame();
-        new TournamentGame(0.25, true, true).RunGame();
-        //new TournamentGame(0.5, false, true).RunGame();
-        //new TournamentGame(0.5, true, false).RunGame();
-        new TournamentGame(0.5, true, true).RunGame();
+        new TournamentGame(false, false, 0).RunGame();
+        //new TournamentGame(false, true, 0.25).RunGame();
+        //new TournamentGame(true, false, 0.25).RunGame();
+        new TournamentGame(true, true, 0.25).RunGame();
+        //new TournamentGame(false, true, 0.5).RunGame();
+        //new TournamentGame(true, false, 0.5).RunGame();
+        new TournamentGame(true, true, 0.5).RunGame();
         break;
     case GameType.Population:
         new PopulationGame(false).RunGame();

@@ -1,127 +1,104 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Strategies.Interfaces;
+﻿using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
 {
-    internal class GameField(Options options, int step, params IStrategy[] strategies) : Abstracts.GameField(options, strategies)
+    internal class GameField(Options options, IList<IStrategy> strategies) :
+        Abstracts.GameField<Options>(options, strategies)
     {
-        public GameField(Options options, int step, IStrategy[] strategies, List<History> actions) : this(options, step)
+        protected override void AddStrategies(IList<IStrategy> strategies)
         {
-            AddStrategies(strategies, actions, step <= options.StabilizationSteps);
+            Strategies = strategies.ToList();
         }
 
-        private void AddStrategies(IStrategy[] strategies, List<History> actions, bool isStabilization)
-        {
-            // Moran process will be used to get next generation
-            var allStrategies = actions.SelectMany(_ => new[] {
-                    new {
-                        Name = _.Strategy1Name,
-                        Id = _.Strategy1Id,
-                    },
-                    new {
-                        Name = _.Strategy2Name,
-                        Id = _.Strategy2Id,
-                    }
-                })
-                .DistinctBy(_ => _.Id)
-                .Select(_ => new Generation()
-                {
-                    Id = _.Id,
-                    Name = _.Name,
-                    Score = actions
-                        .Where(a => a.ContainsStrategy(_.Id))
-                        .Sum(a => a.GetStrategyLastScore(_.Id)),
-                    Total = actions
-                        .Where(a => a.ContainsStrategy(_.Id))
-                        .Sum(a => a.GetScoresSum(_.Id)),
-                    Children = 1,
-                })
-                .OrderByDescending(_ => _.Score)
-                .ThenByDescending(_ => _.Total)
-                .ThenBy(_ => Randomizer.Next())
-                .ToArray();
-
-            var birth = allStrategies.First();
-            var death = allStrategies.Last();
-
-            if (birth.Score > death.Score && !isStabilization)
-            {
-                birth.Children = 2;
-                death.Children = 0;
-            }
-
-            var hash = new Dictionary<Guid, Guid>();
-
-            foreach (var strategyInfo in allStrategies)
-            {
-                var masterStrategy = strategies.First(_ => _.Name == strategyInfo.Name);
-                for (var i = 0; i < strategyInfo.Children; i++)
-                {
-                    var strategy = masterStrategy.Clone();
-                    hash.Add(strategy.Id, strategyInfo.Id);
-
-                    if (Strategies.Any(_ => _.Id == strategy.Id))
-                    {
-                        throw new ArgumentException("Strategy with same Id already exists");
-                    }
-
-                    Strategies.Add(strategy);
-
-                    foreach (var s in Strategies)
-                    {
-                        var sOldId = hash[s.Id];
-                        var oldHistory = actions
-                            .First(_ => _.Strategy1Id == strategyInfo.Id && _.Strategy2Id == sOldId || _.Strategy2Id == strategyInfo.Id && _.Strategy1Id == sOldId);
-                        var history = oldHistory
-                            .Clone(s, strategy, sOldId, strategyInfo.Id);
-                        Actions.Add(history);
-                    }
-                }
-            }
-        }
-
-        private readonly int Step = step;
+        private readonly Tournament.Options TournamentOptions = new(options.HumaneFlexible, options.SelfishFlexible, options.f, 0.05);
 
         public void DoStep()
         {
-            Parallel.ForEach(Actions, actions =>
+            // Moran process will be used to get next generation
+
+            var tournamentGameField = new Tournament.GameField(TournamentOptions, Strategies);
+            tournamentGameField.DoSteps();
+
+            var score = Strategies.Select(s => new
             {
-                var s1 = Strategies.First(_ => _.Id == actions.Strategy1Id);
-                var s2 = Strategies.First(_ => _.Id == actions.Strategy2Id);
-
-                var strategy1Actions = actions.GetStrategy1Actions();
-                var strategy2Actions = actions.GetStrategy2Actions();
-                var strategy1Cache = actions.GetStrategy1Cache();
-                var strategy2Cache = actions.GetStrategy2Cache();
-
-                var action1 = DoDoActionOrRandom(() =>
-                {
-                    return s1.DoAction(strategy1Actions, strategy2Actions, strategy1Cache, Step, Options);
-                });
-                var action2 = DoDoActionOrRandom(() =>
-                {
-                    return s2.DoAction(strategy2Actions, strategy1Actions, strategy2Cache, Step, Options);
-                });
-
-                var action1Intensive = CalculateActionIntensive(s1, action1, strategy1Actions, strategy2Actions);
-                var action2Intensive = CalculateActionIntensive(s2, action2, strategy2Actions, strategy1Actions);
-
-                var action1Item = new HistoryItem()
-                {
-                    Action = action1,
-                    ActionIntensive = action1Intensive,
-                    Score = CalculateScore(action1, action1Intensive, action2, action2Intensive)
-                };
-                var action2Item = new HistoryItem()
-                {
-                    Action = action2,
-                    ActionIntensive = action2Intensive,
-                    Score = CalculateScore(action2, action2Intensive, action1, action1Intensive)
-                };
-
-                actions.AddAction(action1Item, action2Item);
-
+                s.Id,
+                Actions = tournamentGameField.Actions.Where(_ => _.ContainsStrategy(s.Id)).ToArray(),
+            }).Select(s => new
+            {
+                s.Id,
+                Score = s.Actions.Sum(_ => _.GetScore(s.Id, Options.MinSteps)),
             });
+
+            var d1 = score.Min(s => s.Score) / 2;
+            var d2 = score.Max(s => s.Score) + score.Min(s => s.Score);
+
+            var score2 = score.Select(s => new
+            {
+                s.Id,
+                s.Score,
+                ReverseScore = d2 - s.Score,
+            }).OrderByDescending(_ => _.Score);
+
+            var cumulative1 = 0.0;
+            var cumulative2 = 0.0;
+
+            var cSums = score2.Select(s => new
+            {
+                s.Id,
+                s.Score,
+                Cumulative = (cumulative1 += s.Score),
+                ReverseCumulative = (cumulative2 += s.ReverseScore),
+            }).ToArray();
+
+            var total1 = cSums.Max(_ => _.Cumulative);
+            var r1 = Randomizer.NextDouble() * total1;
+
+            var total2 = cSums.Max(_ => _.ReverseCumulative);
+            var r2 = Randomizer.NextDouble() * total2;
+
+            var birthIndex = 0;
+            var deathIndex = Randomizer.Next(Strategies.Count);
+
+            for (var i = 0; i < cSums.Length; i++)
+            {
+                if (cSums[i].Cumulative >= r1)
+                {
+                    birthIndex = i;
+                    break;
+                }
+            }
+
+            for (var i = 0; i < cSums.Length; i++)
+            {
+                if (cSums[i].ReverseCumulative >= r2)
+                {
+                    deathIndex = i;
+                    break;
+                }
+            }
+
+            var birth = Strategies.First(_ => _.Id == cSums[birthIndex].Id);
+            var death = Strategies.First(_ => _.Id == cSums[deathIndex].Id);
+            deathIndex = Strategies.IndexOf(death);
+            Strategies[deathIndex] = birth.Clone();
         }
+
+        /*private static double[] CumulativeSums(double[] values)
+        {
+            if (values == null || values.Length == 0)
+            {
+                return [];
+            }
+
+            var results = new double[values.Length];
+            results[0] = values[0];
+
+            for (var i = 1; i < values.Length; i++)
+            {
+                results[i] = results[i - 1] + values[i];
+            }
+
+            return results;
+        }*/
     }
 }

@@ -1,10 +1,109 @@
-﻿using Gameplay.Constructs;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament.Constructs;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class GameField(Options options, params IStrategy[] strategies) : Abstracts.GameField(options, strategies)
+    internal class GameField(Options options, IList<IStrategy> strategies) :
+        Abstracts.GameField<Options>(options, strategies)
     {
+        public List<History> Actions { get; private set; }
+
+        protected override void AddStrategies(IList<IStrategy> strategies)
+        {
+            Actions = [];
+
+            foreach (var strategy in strategies)
+            {
+                if (Strategies.Any(_ => _.Id == strategy.Id))
+                {
+                    throw new ArgumentException("Strategy with same Id already exists");
+                }
+
+                Strategies.Add(strategy);
+
+                foreach (var s in Strategies)
+                {
+                    Actions.Add(new History(s, strategy));
+                }
+            }
+        }
+
+        private GameActionIntensive CalculateActionIntensive(IStrategy strategy, GameAction action, List<HistoryItem> ownActions, List<HistoryItem> opponentActions)
+        {
+            if (!Options.SelfishFlexible && strategy.Selfish || !Options.HumaneFlexible && !strategy.Selfish)
+            {
+                return GameActionIntensive.Normal;
+            }
+
+            var lastOpponentAction = opponentActions.LastOrDefault();
+            var lastOwnAction = ownActions.LastOrDefault();
+            return lastOpponentAction?.Action != action || lastOwnAction?.Action != action ? GameActionIntensive.Low : GameActionIntensive.Normal;
+        }
+
+        private double CalculateScore(GameAction ownAction, GameActionIntensive ownActionIntensive, GameAction oppositeAction, GameActionIntensive oppositeActionIntensive)
+        {
+            double score = ownAction == GameAction.Cooperate
+                ? oppositeAction == GameAction.Cooperate ? Options.C : Options.c
+                : oppositeAction == GameAction.Cooperate ? Options.D : Options.d;
+
+            if (ownAction == oppositeAction)
+            {
+                var m = GetScoreMod(oppositeActionIntensive);
+                if (ownAction == GameAction.Cooperate)
+                {
+                    if (m != 0)
+                    {
+                        score -= m;
+                        score -= GetScoreMod(ownActionIntensive);
+                    }
+                    else
+                    {
+                        score += GetScoreMod(ownActionIntensive);
+                    }
+                }
+                else
+                {
+                    if (m != 0)
+                    {
+                        score += m;
+                        score += GetScoreMod(ownActionIntensive);
+                    }
+                    else
+                    {
+                        score -= GetScoreMod(ownActionIntensive);
+                    }
+                }
+            }
+            else
+            {
+                if (ownAction == GameAction.Cooperate)
+                {
+                    score += GetScoreMod(ownActionIntensive);
+                    score += GetScoreMod(oppositeActionIntensive);
+                }
+                else
+                {
+                    score -= GetScoreMod(ownActionIntensive);
+                    score -= GetScoreMod(oppositeActionIntensive);
+                }
+            }
+
+            return score;
+        }
+
+        private double GetScoreMod(GameActionIntensive actionIntensive)
+        {
+            return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
+        }
+
+        private GameAction DoDoActionOrRandom(Func<GameAction> doAction)
+        {
+            return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100
+                ? (GameAction)Randomizer.Next(2)
+                : doAction();
+        }
+
         public void DoSteps()
         {
             Parallel.ForEach(Actions, actions =>

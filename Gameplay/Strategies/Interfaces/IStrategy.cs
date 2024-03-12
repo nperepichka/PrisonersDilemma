@@ -1,6 +1,6 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Enums;
-using Gameplay.Games.Abstracts;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Tournament;
+using Gameplay.Games.Tournament.Constructs;
 
 namespace Gameplay.Strategies.Interfaces
 {

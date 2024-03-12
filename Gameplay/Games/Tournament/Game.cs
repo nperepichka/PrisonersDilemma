@@ -1,14 +1,14 @@
-﻿using Gameplay.Constructs;
-using Gameplay.Games.Helpers;
+﻿using Gameplay.Games.Helpers;
+using Gameplay.Games.Tournament.Constructs;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class Game(double f, bool humaneFlexible, bool selfishFlexible)
+    internal class Game(bool humaneFlexible, bool selfishFlexible, double f)
     {
         private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
 
-        private Options Options { get; set; } = new Options(f, humaneFlexible, selfishFlexible);
+        private Options Options { get; set; } = new Options(humaneFlexible, selfishFlexible, f);
 
         private IEnumerable<IStrategy> Strategies { get; set; }
 
@@ -19,14 +19,15 @@ namespace Gameplay.Games.Tournament
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Actions = actions.Where(_ => _.ContainsStrategy(s.Name)).ToArray(),
+                s.Id,
+                Actions = actions.Where(_ => _.ContainsStrategy(s.Id)).ToArray(),
             }).Select(s => new
             {
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Score = s.Actions.Average(_ => _.GetScore(s.Name, Options.MinSteps)),
-                AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Name)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
+                Score = s.Actions.Average(_ => _.GetScore(s.Id, Options.MinSteps)),
+                AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Id)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {
                 s.Name,

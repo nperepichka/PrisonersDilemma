@@ -1,6 +1,6 @@
 ﻿using Gameplay.Enums;
 
-namespace Gameplay.Constructs
+namespace Gameplay.Games.Tournament.Constructs
 {
     internal class HistoryItem()
     {

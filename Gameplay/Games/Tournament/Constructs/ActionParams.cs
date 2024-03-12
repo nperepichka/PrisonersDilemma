@@ -1,6 +1,4 @@
-﻿using Gameplay.Games.Abstracts;
-
-namespace Gameplay.Constructs
+﻿namespace Gameplay.Games.Tournament.Constructs
 {
     internal class ActionParams(List<HistoryItem> ownActions, List<HistoryItem> opponentActions, Dictionary<string, object> cache, int step, Options options)
     {
