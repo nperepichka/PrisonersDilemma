@@ -26,17 +26,16 @@ namespace Gameplay.Games.Population
             }).Select(s => new
             {
                 s.Id,
-                Score = s.Actions.Sum(_ => _.GetScore(s.Id, Options.MinSteps)),
+                Score = s.Actions.Average(_ => _.GetScore(s.Id, Options.MinSteps)),
             });
 
-            var d1 = score.Min(s => s.Score) / 2;
-            var d2 = score.Max(s => s.Score) + score.Min(s => s.Score);
+            var d = score.Max(s => s.Score) + score.Min(s => s.Score);
 
             var score2 = score.Select(s => new
             {
                 s.Id,
                 s.Score,
-                ReverseScore = d2 - s.Score,
+                ReverseScore = d - s.Score,
             }).OrderByDescending(_ => _.Score);
 
             var cumulative1 = 0.0;
@@ -56,14 +55,14 @@ namespace Gameplay.Games.Population
             var total2 = cSums.Max(_ => _.ReverseCumulative);
             var r2 = Randomizer.NextDouble() * total2;
 
-            var birthIndex = 0;
-            var deathIndex = Randomizer.Next(Strategies.Count);
+            var birthId = Guid.Empty;
+            var deathId = Guid.Empty;
 
             for (var i = 0; i < cSums.Length; i++)
             {
                 if (cSums[i].Cumulative >= r1)
                 {
-                    birthIndex = i;
+                    birthId = cSums[i].Id;
                     break;
                 }
             }
@@ -72,33 +71,15 @@ namespace Gameplay.Games.Population
             {
                 if (cSums[i].ReverseCumulative >= r2)
                 {
-                    deathIndex = i;
+                    deathId = cSums[i].Id;
                     break;
                 }
             }
 
-            var birth = Strategies.First(_ => _.Id == cSums[birthIndex].Id);
-            var death = Strategies.First(_ => _.Id == cSums[deathIndex].Id);
-            deathIndex = Strategies.IndexOf(death);
+            var birth = Strategies.First(_ => _.Id == birthId);
+            var death = Strategies.First(_ => _.Id == deathId);
+            var deathIndex = Strategies.IndexOf(death);
             Strategies[deathIndex] = birth.Clone();
         }
-
-        /*private static double[] CumulativeSums(double[] values)
-        {
-            if (values == null || values.Length == 0)
-            {
-                return [];
-            }
-
-            var results = new double[values.Length];
-            results[0] = values[0];
-
-            for (var i = 1; i < values.Length; i++)
-            {
-                results[i] = results[i - 1] + values[i];
-            }
-
-            return results;
-        }*/
     }
 }
