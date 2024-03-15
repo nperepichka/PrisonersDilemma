@@ -24,12 +24,12 @@ namespace Gameplay.Games.Helpers
             new Smart(),
         ];
 
-        public static IStrategy[] GetStrategies<TDoninationStrategy>() where TDoninationStrategy : IStrategy
+        public static IStrategy[] GetStrategies<TDominationStrategy>() where TDominationStrategy : IStrategy
         {
             var strategies = GetAllStrategies().ToList();
-            while (strategies.Count(_ => _ is TDoninationStrategy) < strategies.Count(_ => _ is not TDoninationStrategy))
+            while (strategies.Count(_ => _ is TDominationStrategy) < strategies.Count(_ => _ is not TDominationStrategy))
             {
-                var clone = strategies.First(_ => _ is TDoninationStrategy).Clone();
+                var clone = strategies.First(_ => _ is TDominationStrategy).Clone();
                 strategies.Add(clone);
             }
             return strategies.ToArray();
