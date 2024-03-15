@@ -27,7 +27,7 @@ namespace Gameplay.Games.Helpers
         public static IStrategy[] GetStrategies<TDoninationStrategy>() where TDoninationStrategy : IStrategy
         {
             var strategies = GetAllStrategies().ToList();
-            while (strategies.Count(_ => _ is TDoninationStrategy) <= strategies.Count(_ => _ is not TDoninationStrategy))
+            while (strategies.Count(_ => _ is TDoninationStrategy) < strategies.Count(_ => _ is not TDoninationStrategy))
             {
                 var clone = strategies.First(_ => _ is TDoninationStrategy).Clone();
                 strategies.Add(clone);
