@@ -11,8 +11,6 @@ namespace Gameplay.Games.Population
             Strategies = strategies.ToList();
         }
 
-        private const string TableFormat = "{0,8}{1,27}";
-
         private readonly Tournament.Options TournamentOptions = new(options.HumaneFlexible, options.SelfishFlexible, options.f, 0.05);
 
         public void DoStep()
@@ -33,13 +31,6 @@ namespace Gameplay.Games.Population
             })
             .OrderByDescending(_ => _.Score)
             .ToArray();
-
-            Console.WriteLine(string.Format(TableFormat, "Score", "Name"));
-            Console.WriteLine("------------------------------------");
-            foreach (var s in score)
-            {
-                Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", s.Name));
-            }
 
             var birthId = Guid.Empty;
             var deathId = Guid.Empty;

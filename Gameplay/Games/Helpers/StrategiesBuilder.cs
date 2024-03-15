@@ -23,5 +23,16 @@ namespace Gameplay.Games.Helpers
             new Downing(),
             new Smart(),
         ];
+
+        public static IStrategy[] GetStrategies<TDoninationStrategy>() where TDoninationStrategy : IStrategy
+        {
+            var strategies = GetAllStrategies().ToList();
+            while (strategies.Count(_ => _ is TDoninationStrategy) <= strategies.Count(_ => _ is not TDoninationStrategy))
+            {
+                var clone = strategies.First(_ => _ is TDoninationStrategy).Clone();
+                strategies.Add(clone);
+            }
+            return strategies.ToArray();
+        }
     }
 }

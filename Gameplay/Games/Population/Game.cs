@@ -1,4 +1,5 @@
 ﻿using Gameplay.Games.Helpers;
+using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
@@ -15,7 +16,7 @@ namespace Gameplay.Games.Population
 
         private int SameStateSnapshot { get; set; } = 1;
 
-        private bool WriteScores(List<IStrategy> strategies, int step)
+        private bool WriteScores(IList<IStrategy> strategies, int step)
         {
             var score = Strategies.Select(s => new
             {
@@ -35,24 +36,35 @@ namespace Gameplay.Games.Population
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
                 var flagsStr = $"{niceFlag,2}{selfishFlag,2}";
-                Console.WriteLine(string.Format(TableFormat, s.Count,s.Name, flagsStr));
+                Console.WriteLine(string.Format(TableFormat, s.Count, s.Name, flagsStr));
             }
 
             Console.WriteLine();
 
-            var stateSnapshot = string.Join("|", score.Where(_ => _.Count > 0).Select(_ => $"{_.Name}:{_.Count}"));
-            if (stateSnapshot == StateSnapshot)
+            if (Options.SamePopulationStepsToStop > 0)
             {
-                SameStateSnapshot++;
-                if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                var stateSnapshot = string.Join("|", score.Where(_ => _.Count > 0).Select(_ => $"{_.Name}:{_.Count}"));
+                if (stateSnapshot == StateSnapshot)
                 {
-                    return true;
+                    SameStateSnapshot++;
+                    if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    StateSnapshot = stateSnapshot;
+                    SameStateSnapshot = 1;
                 }
             }
             else
             {
-                StateSnapshot = stateSnapshot;
-                SameStateSnapshot = 1;
+                var differentStrategiesCount = score.Count(_ => _.Count > 0);
+                if (differentStrategiesCount == 1)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -63,13 +75,13 @@ namespace Gameplay.Games.Population
             Console.WriteLine($"Flexible: {Options.f:0.00}   Seed: {Options.Seed:0.00}");
             Console.WriteLine();
 
-            var gameStrategies = StrategiesBuilder.GetAllStrategies();
+            var gameStrategies = StrategiesBuilder.GetStrategies<Smart>();
             Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
-            var shouldStop = WriteScores(Strategies.ToList(), 0);
+            var step = 0;
+            var shouldStop = WriteScores(gameStrategies, step);
 
             var gameField = new GameField(Options, gameStrategies);
-            var step = 0;
             while (!shouldStop)
             {
                 step++;
