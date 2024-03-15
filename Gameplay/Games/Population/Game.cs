@@ -40,6 +40,21 @@ namespace Gameplay.Games.Population
 
             Console.WriteLine();
 
+            var stateSnapshot = string.Join("|", score.Where(_ => _.Count > 0).Select(_ => $"{_.Name}:{_.Count}"));
+            if (stateSnapshot == StateSnapshot)
+            {
+                SameStateSnapshot++;
+                if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                StateSnapshot = stateSnapshot;
+                SameStateSnapshot = 1;
+            }
+
             return false;
         }
 
@@ -51,13 +66,15 @@ namespace Gameplay.Games.Population
             var gameStrategies = StrategiesBuilder.GetAllStrategies();
             Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
-            WriteScores(Strategies.ToList(), 0);
+            var shouldStop = WriteScores(Strategies.ToList(), 0);
 
             var gameField = new GameField(Options, gameStrategies);
-            for (var step = 1; step <= 50; step++)
+            var step = 0;
+            while (!shouldStop)
             {
+                step++;
                 gameField.DoStep();
-                WriteScores(gameField.Strategies, step);
+                shouldStop = WriteScores(gameField.Strategies, step);
             }
         }
     }
