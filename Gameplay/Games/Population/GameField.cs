@@ -1,4 +1,5 @@
-﻿using Gameplay.Games.Population.Enums;
+﻿using Gameplay.Enums;
+using Gameplay.Games.Population.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
@@ -9,7 +10,10 @@ namespace Gameplay.Games.Population
         protected override void AddStrategies(IList<IStrategy> strategies)
         {
             Strategies = strategies.ToList();
+            OriginalStrategies = strategies.ToList();
         }
+
+        private IList<IStrategy> OriginalStrategies { get; set; }
 
         private readonly Tournament.Options TournamentOptions = new(options.HumaneFlexible, options.SelfishFlexible, options.f, 0.05);
 
@@ -90,10 +94,19 @@ namespace Gameplay.Games.Population
                     throw new NotImplementedException($"Not implemented: {Options.PopulationBuildType}");
             }
 
-            var birth = Strategies.First(_ => _.Id == birthId);
+            var birth = GetBirthStategy(() => {
+                return Strategies.First(_ => _.Id == birthId);
+            });
             var death = Strategies.First(_ => _.Id == deathId);
             var deathIndex = Strategies.IndexOf(death);
             Strategies[deathIndex] = birth.Clone();
+        }
+
+        private IStrategy GetBirthStategy(Func<IStrategy> selectStrategy)
+        {
+            return Options.Mutation > 0 && Randomizer.Next(0, 10001) <= Options.Mutation * 100
+                ? OriginalStrategies[Randomizer.Next(OriginalStrategies.Count)]
+                : selectStrategy();
         }
     }
 }

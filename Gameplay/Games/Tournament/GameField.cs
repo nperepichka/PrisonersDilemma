@@ -97,7 +97,7 @@ namespace Gameplay.Games.Tournament
             return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
         }
 
-        private GameAction DoDoActionOrRandom(Func<GameAction> doAction)
+        private GameAction DoActionOrRandom(Func<GameAction> doAction)
         {
             return Options.Seed > 0 && Randomizer.Next(0, 10001) <= Options.Seed * 100
                 ? (GameAction)Randomizer.Next(2)
@@ -119,11 +119,11 @@ namespace Gameplay.Games.Tournament
                     var strategy1Cache = actions.GetStrategy1Cache();
                     var strategy2Cache = actions.GetStrategy2Cache();
 
-                    var action1 = DoDoActionOrRandom(() =>
+                    var action1 = DoActionOrRandom(() =>
                     {
                         return s1.DoAction(strategy1Actions, strategy2Actions, strategy1Cache, step, Options);
                     });
-                    var action2 = DoDoActionOrRandom(() =>
+                    var action2 = DoActionOrRandom(() =>
                     {
                         return s2.DoAction(strategy2Actions, strategy1Actions, strategy2Cache, step, Options);
                     });

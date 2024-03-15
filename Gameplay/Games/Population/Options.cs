@@ -8,5 +8,8 @@ namespace Gameplay.Games.Population
         public readonly int SamePopulationStepsToStop = 0;
 
         public readonly PopulationBuildType PopulationBuildType = PopulationBuildType.MoranProcess;
+
+        // Chance of strategy to mutate (0.00% - 100.00%)
+        public readonly double Mutation = 0;
     }
 }
