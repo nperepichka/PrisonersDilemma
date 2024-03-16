@@ -1,4 +1,5 @@
-﻿using Gameplay.Enums;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament.Constructs

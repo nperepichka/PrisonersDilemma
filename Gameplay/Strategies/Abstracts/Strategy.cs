@@ -1,5 +1,5 @@
-﻿using Gameplay.Enums;
-using Gameplay.Games.Tournament;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Games.Tournament.Constructs;
 using Gameplay.Strategies.Interfaces;
 using System.Diagnostics;

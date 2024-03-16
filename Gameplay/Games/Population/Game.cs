@@ -1,14 +1,13 @@
-﻿using Gameplay.Games.Helpers;
+﻿using Gameplay.Constructs;
+using Gameplay.Helpers;
 using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
 {
-    internal class Game(bool flexible)
+    internal class Game(Options options)
     {
         private const string TableFormat = "{0,6}{1,27}{2,7}";
-
-        private Options Options { get; set; } = new Options(flexible);
 
         private IEnumerable<IStrategy> Strategies { get; set; }
 
@@ -41,13 +40,13 @@ namespace Gameplay.Games.Population
 
             Console.WriteLine();
 
-            if (Options.SamePopulationStepsToStop > 0)
+            if (options.SamePopulationStepsToStop > 0)
             {
                 var stateSnapshot = string.Join("|", score.Where(_ => _.Count > 0).Select(_ => $"{_.Name}:{_.Count}"));
                 if (stateSnapshot == StateSnapshot)
                 {
                     SameStateSnapshot++;
-                    if (SameStateSnapshot == Options.SamePopulationStepsToStop)
+                    if (SameStateSnapshot == options.SamePopulationStepsToStop)
                     {
                         return true;
                     }
@@ -72,7 +71,7 @@ namespace Gameplay.Games.Population
 
         public void RunGame()
         {
-            Console.WriteLine($"Flexible: {Options.f:0.00}   Seed: {Options.Seed:0.00}   Mutation: {Options.Mutation:0.00}");
+            Console.WriteLine($"Flexible: {options.f:0.00}   Seed: {options.Seed:0.00}   Mutation: {options.Mutation:0.00}");
             Console.WriteLine();
 
             var gameStrategies = StrategiesBuilder.GetStrategies<Smart>();
@@ -81,7 +80,7 @@ namespace Gameplay.Games.Population
             var step = 0;
             var shouldStop = WriteScores(gameStrategies, step);
 
-            var gameField = new GameField(Options, gameStrategies);
+            var gameField = new GameField(options, gameStrategies);
             while (!shouldStop)
             {
                 step++;

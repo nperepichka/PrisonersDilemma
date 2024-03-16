@@ -1,7 +1,7 @@
 ﻿using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Games.Helpers
+namespace Gameplay.Helpers
 {
     internal static class StrategiesBuilder
     {
@@ -32,7 +32,7 @@ namespace Gameplay.Games.Helpers
                 var clone = strategies.First(_ => _ is TDominationStrategy).Clone();
                 strategies.Add(clone);
             }
-            return strategies.ToArray();
+            return [.. strategies];
         }
     }
 }

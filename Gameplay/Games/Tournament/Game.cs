@@ -1,14 +1,13 @@
-﻿using Gameplay.Games.Helpers;
+﻿using Gameplay.Constructs;
 using Gameplay.Games.Tournament.Constructs;
+using Gameplay.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class Game(bool humaneFlexible, bool selfishFlexible, double f)
+    internal class Game(Options options)
     {
         private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
-
-        private Options Options { get; set; } = new Options(humaneFlexible, selfishFlexible, f);
 
         private IEnumerable<IStrategy> Strategies { get; set; }
 
@@ -26,7 +25,7 @@ namespace Gameplay.Games.Tournament
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Score = s.Actions.Average(_ => _.GetScore(s.Id, Options.MinSteps)),
+                Score = s.Actions.Average(_ => _.GetScore(s.Id, options.MinSteps)),
                 AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Id)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
             }).Select(s => new
             {
@@ -35,8 +34,8 @@ namespace Gameplay.Games.Tournament
                 s.Nice,
                 s.Score,
                 AggressiveNumber = Math.Max(s.AggressiveNumber - 1, 0),
-                Absolute = s.Score / Options.D,
-                Cooperation = s.Score / Options.C,
+                Absolute = s.Score / options.D,
+                Cooperation = s.Score / options.C,
             }).OrderByDescending(_ => _.Score);
 
             Console.WriteLine(string.Format(TableFormat, "Score", "Absolute", "Cooperation", "Name", "Flags"));
@@ -64,13 +63,13 @@ namespace Gameplay.Games.Tournament
 
             List<History> actions = [];
 
-            var hff = Options.HumaneFlexible ? "HF " : "";
-            var sff = Options.SelfishFlexible ? "SF" : "";
-            Console.WriteLine($"Flexible: {f:0.00} {hff}{sff}   Seed: {Options.Seed:0.00}");
+            var hff = options.HumaneFlexible ? "HF " : "";
+            var sff = options.SelfishFlexible ? "SF" : "";
+            Console.WriteLine($"Flexible: {options.f:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
 
-            for (var r = 0; r < Options.Repeats; r++)
+            for (var r = 0; r < options.Repeats; r++)
             {
-                var gameField = new GameField(Options, gameStrategies);
+                var gameField = new GameField(options, gameStrategies);
                 gameField.DoSteps();
                 actions.AddRange(gameField.Actions);
             }

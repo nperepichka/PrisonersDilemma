@@ -1,0 +1,20 @@
+{
+  //"GameType": "Tournament",
+  "GameType": "Population",
+  "D": 7,
+  "C": 5,
+  "d": 2,
+  "c": 0,
+  "HumaneFlexible": false,
+  "SelfishFlexible": false,
+  "f": 0.5,
+  "Seed": 0,
+  "MinSteps": 100,
+  "SamePopulationStepsToStop": 0,
+  "PopulationBuildType": "MoranProcess",
+  "Mutation": 0,
+  "SameLastCooperationScores": 10,
+  //"ValuableCooperationScoreNumber": 0.01,
+  "ValuableCooperationScoreNumber": 0.05,
+  "Repeats": 1
+}

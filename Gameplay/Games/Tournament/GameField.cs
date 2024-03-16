@@ -1,18 +1,31 @@
-﻿using Gameplay.Enums;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using Gameplay.Games.Tournament.Constructs;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
 {
-    internal class GameField(Options options, IList<IStrategy> strategies) :
-        Abstracts.GameField<Options>(options, strategies)
+    internal class GameField
     {
+        public GameField(Options options, IList<IStrategy> strategies)
+        {
+            Options = options;
+            Randomizer = new();
+            Strategies = [];
+            Actions = [];
+            AddStrategies(strategies);
+        }
+
+        private Random Randomizer { get; set; }
+
+        private Options Options { get; set; }
+
+        public List<IStrategy> Strategies { get; private set; }
+
         public List<History> Actions { get; private set; }
 
-        protected override void AddStrategies(IList<IStrategy> strategies)
+        private void AddStrategies(IList<IStrategy> strategies)
         {
-            Actions = [];
-
             foreach (var strategy in strategies)
             {
                 if (Strategies.Any(_ => _.Id == strategy.Id))
@@ -146,7 +159,7 @@ namespace Gameplay.Games.Tournament
 
                     actions.AddAction(action1Item, action2Item);
 
-                    if (actions.ShouldStopTournament(options))
+                    if (actions.ShouldStopTournament(Options))
                     {
                         break;
                     }

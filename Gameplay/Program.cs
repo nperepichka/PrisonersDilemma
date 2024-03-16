@@ -1,30 +1,23 @@
-﻿using Gameplay.Enums;
+﻿using Gameplay.Constructs;
+using Gameplay.Enums;
 using System.Diagnostics;
 using PopulationGame = Gameplay.Games.Population.Game;
 using TournamentGame = Gameplay.Games.Tournament.Game;
 
-//var gameType = GameType.Tournament;
-var gameType = GameType.Population;
+var options = Options.Init();
 
 var watch = Stopwatch.StartNew();
 
-switch (gameType)
+switch (options.GameType)
 {
     case GameType.Tournament:
-        new TournamentGame(false, false, 0).RunGame();
-        //new TournamentGame(false, true, 0.25).RunGame();
-        //new TournamentGame(true, false, 0.25).RunGame();
-        new TournamentGame(true, true, 0.25).RunGame();
-        //new TournamentGame(false, true, 0.5).RunGame();
-        //new TournamentGame(true, false, 0.5).RunGame();
-        new TournamentGame(true, true, 0.5).RunGame();
+        new TournamentGame(options).RunGame();
         break;
     case GameType.Population:
-        new PopulationGame(false).RunGame();
-        //new PopulationGame(true).RunGame();
+        new PopulationGame(options).RunGame();
         break;
     default:
-        throw new NotImplementedException($"Game type not implemented: {gameType}");
+        throw new NotImplementedException($"Game type not implemented: {options.GameType}");
 }
 
 watch.Stop();

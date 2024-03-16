@@ -1,25 +1,31 @@
-﻿using Gameplay.Enums;
+﻿using Gameplay.Constructs;
 using Gameplay.Games.Population.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
 {
-    internal class GameField(Options options, IList<IStrategy> strategies) :
-        Abstracts.GameField<Options>(options, strategies)
+    internal class GameField
     {
-        protected override void AddStrategies(IList<IStrategy> strategies)
+        public GameField(Options options, IList<IStrategy> strategies)
         {
-            Strategies = strategies.ToList();
-            OriginalStrategies = strategies.ToList();
+            Options = options;
+            Randomizer = new();
+            Strategies = [];
+            Strategies = [.. strategies];
+            OriginalStrategies = [.. strategies];
         }
+
+        private Random Randomizer { get; set; }
+
+        private Options Options { get; set; }
+
+        public List<IStrategy> Strategies { get; private set; }
 
         private IList<IStrategy> OriginalStrategies { get; set; }
 
-        private readonly Tournament.Options TournamentOptions = new(options.HumaneFlexible, options.SelfishFlexible, options.f, 0.05);
-
         public void DoStep()
         {
-            var tournamentGameField = new Tournament.GameField(TournamentOptions, Strategies);
+            var tournamentGameField = new Tournament.GameField(Options, Strategies);
             tournamentGameField.DoSteps();
 
             var score = Strategies.Select(s => new
@@ -94,7 +100,8 @@ namespace Gameplay.Games.Population
                     throw new NotImplementedException($"Not implemented: {Options.PopulationBuildType}");
             }
 
-            var birth = GetBirthStategy(() => {
+            var birth = GetBirthStategy(() =>
+            {
                 return Strategies.First(_ => _.Id == birthId);
             });
             var death = Strategies.First(_ => _.Id == deathId);
