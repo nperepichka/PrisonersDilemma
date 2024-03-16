@@ -1,6 +1,5 @@
 ﻿using Gameplay.Constructs;
-using Gameplay.Helpers;
-using Gameplay.Strategies;
+using Gameplay.Strategies.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
@@ -71,10 +70,10 @@ namespace Gameplay.Games.Population
 
         public void RunGame()
         {
-            Console.WriteLine($"Flexible: {options.f:0.00}   Seed: {options.Seed:0.00}   Mutation: {options.Mutation:0.00}");
+            Console.WriteLine($"Flexible: {options.FlexibilityValue:0.00}   Seed: {options.Seed:0.00}   Mutation: {options.Mutation:0.00}");
             Console.WriteLine();
 
-            var gameStrategies = StrategiesBuilder.GetStrategies<Smart>();
+            var gameStrategies = StrategiesBuilder.GetStrategies(options);
             Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
             var step = 0;

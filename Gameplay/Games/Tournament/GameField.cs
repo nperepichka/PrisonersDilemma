@@ -107,7 +107,7 @@ namespace Gameplay.Games.Tournament
 
         private double GetScoreMod(GameActionIntensive actionIntensive)
         {
-            return actionIntensive == GameActionIntensive.Low ? Options.f : 0;
+            return actionIntensive == GameActionIntensive.Low ? Options.FlexibilityValue : 0;
         }
 
         private GameAction DoActionOrRandom(Func<GameAction> doAction)

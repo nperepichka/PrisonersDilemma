@@ -1,6 +1,6 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Games.Tournament.Constructs;
-using Gameplay.Helpers;
+using Gameplay.Strategies.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
@@ -65,7 +65,7 @@ namespace Gameplay.Games.Tournament
 
             var hff = options.HumaneFlexible ? "HF " : "";
             var sff = options.SelfishFlexible ? "SF" : "";
-            Console.WriteLine($"Flexible: {options.f:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
+            Console.WriteLine($"Flexible: {options.FlexibilityValue:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
 
             for (var r = 0; r < options.Repeats; r++)
             {

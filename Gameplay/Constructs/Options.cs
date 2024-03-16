@@ -1,13 +1,16 @@
 ﻿using Gameplay.Enums;
 using Gameplay.Games.Population.Enums;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Gameplay.Constructs
 {
     internal class Options
     {
         public GameType GameType { get; set; }
+
+        // TODO: implement
+        public string[] Strategies { get; set; }
 
         #region Socres
 
@@ -26,13 +29,13 @@ namespace Gameplay.Constructs
 
         #region Flexibility
 
-        // Flexibility of interaction (f) - the author's idea of strategy research
+        // Flexibility of interaction - the author's idea of strategy research
 
         public bool HumaneFlexible { get; set; }
 
         public bool SelfishFlexible { get; set; }
 
-        public double f { get; set; }
+        public double FlexibilityValue { get; set; }
 
         #endregion
 
@@ -52,6 +55,8 @@ namespace Gameplay.Constructs
 
         public PopulationBuildType PopulationBuildType { get; set; }
 
+        public string DominationStrategy { get; set; }
+
         #endregion
 
         #region Tournament
@@ -66,9 +71,9 @@ namespace Gameplay.Constructs
 
         #endregion
 
-        public static Options Init()
+        public static Options Init(string optionsFilePath)
         {
-            var jsonLines = File.ReadAllLines("Options.json")
+            var jsonLines = File.ReadAllLines(optionsFilePath)
                 .Where(_ => !_.Trim().StartsWith("//"));
             var json = string.Join(Environment.NewLine, jsonLines);
 

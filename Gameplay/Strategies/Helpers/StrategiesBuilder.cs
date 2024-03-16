@@ -1,7 +1,7 @@
-﻿using Gameplay.Strategies;
+﻿using Gameplay.Constructs;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Helpers
+namespace Gameplay.Strategies.Helpers
 {
     internal static class StrategiesBuilder
     {
@@ -24,13 +24,18 @@ namespace Gameplay.Helpers
             new Smart(),
         ];
 
-        public static IStrategy[] GetStrategies<TDominationStrategy>() where TDominationStrategy : IStrategy
+        public static IStrategy[] GetStrategies(Options options)
         {
             var strategies = GetAllStrategies().ToList();
-            while (strategies.Count(_ => _ is TDominationStrategy) < strategies.Count(_ => _ is not TDominationStrategy))
+            if (!string.IsNullOrEmpty(options.DominationStrategy))
             {
-                var clone = strategies.First(_ => _ is TDominationStrategy).Clone();
-                strategies.Add(clone);
+                while (strategies.Count(_ => _.Name == options.DominationStrategy) < strategies.Count(_ => _.Name != options.DominationStrategy))
+                {
+                    var dominationStrategy = strategies.FirstOrDefault(_ => _.Name == options.DominationStrategy)
+                        ?? throw new ArgumentException($"Unknown strategy: {options.DominationStrategy}");
+                    var clone = dominationStrategy.Clone();
+                    strategies.Add(clone);
+                }
             }
             return [.. strategies];
         }
