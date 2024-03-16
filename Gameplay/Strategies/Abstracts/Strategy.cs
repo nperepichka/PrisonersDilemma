@@ -11,7 +11,7 @@ namespace Gameplay.Strategies.Abstracts
         protected Strategy()
         {
             Type = (new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType)
-                ?? throw new TypeLoadException("Unknow stratedy type");
+                ?? throw new TypeLoadException("Unknow strategy type");
             Name = Type.Name;
             Id = Guid.NewGuid();
         }
