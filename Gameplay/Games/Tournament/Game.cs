@@ -58,7 +58,7 @@ namespace Gameplay.Games.Tournament
 
         public void RunGame()
         {
-            var gameStrategies = StrategiesBuilder.GetAllStrategies();
+            var gameStrategies = StrategiesBuilder.GetStrategies(options);
             Strategies = gameStrategies.DistinctBy(_ => _.Name);
 
             List<History> actions = [];
@@ -67,7 +67,7 @@ namespace Gameplay.Games.Tournament
             var sff = options.SelfishFlexible ? "SF" : "";
             Console.WriteLine($"Flexible: {options.FlexibilityValue:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
 
-            for (var r = 0; r < options.Repeats; r++)
+            for (var r = 0; r < options.TournamentRepeats; r++)
             {
                 var gameField = new GameField(options, gameStrategies);
                 gameField.DoSteps();

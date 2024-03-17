@@ -5,7 +5,7 @@ namespace Gameplay.Games.Population
 {
     internal class GameField
     {
-        public GameField(Options options, IList<IStrategy> strategies)
+        public GameField(Options options, List<IStrategy> strategies)
         {
             Options = options;
             Randomizer = new();
@@ -20,7 +20,7 @@ namespace Gameplay.Games.Population
 
         public List<IStrategy> Strategies { get; private set; }
 
-        private IList<IStrategy> OriginalStrategies { get; set; }
+        private List<IStrategy> OriginalStrategies { get; set; }
 
         public void DoStep()
         {
@@ -51,7 +51,8 @@ namespace Gameplay.Games.Population
                 s.Id,
                 s.Score,
                 ReverseScore = d1 - s.Score,
-            }).OrderBy(_ => _.Id);
+                Random = Randomizer.Next(),
+            }).OrderBy(_ => _.Random);
 
             var cumulative1 = 0.0;
             var cumulative2 = 0.0;

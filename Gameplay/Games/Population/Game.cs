@@ -8,13 +8,9 @@ namespace Gameplay.Games.Population
     {
         private const string TableFormat = "{0,6}{1,27}{2,7}";
 
-        private IEnumerable<IStrategy> Strategies { get; set; }
+        private List<IStrategy> Strategies { get; set; }
 
-        private string StateSnapshot { get; set; } = null;
-
-        private int SameStateSnapshot { get; set; } = 1;
-
-        private bool WriteScores(IList<IStrategy> strategies, int step)
+        private bool WriteScores(List<IStrategy> strategies, int step)
         {
             var score = Strategies.Select(s => new
             {
@@ -39,33 +35,8 @@ namespace Gameplay.Games.Population
 
             Console.WriteLine();
 
-            if (options.SamePopulationStepsToStop > 0)
-            {
-                var stateSnapshot = string.Join("|", score.Where(_ => _.Count > 0).Select(_ => $"{_.Name}:{_.Count}"));
-                if (stateSnapshot == StateSnapshot)
-                {
-                    SameStateSnapshot++;
-                    if (SameStateSnapshot == options.SamePopulationStepsToStop)
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    StateSnapshot = stateSnapshot;
-                    SameStateSnapshot = 1;
-                }
-            }
-            else
-            {
-                var differentStrategiesCount = score.Count(_ => _.Count > 0);
-                if (differentStrategiesCount == 1)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            var differentStrategiesCount = score.Count(_ => _.Count > 0);
+            return differentStrategiesCount == 1;
         }
 
         public void RunGame()
@@ -74,7 +45,7 @@ namespace Gameplay.Games.Population
             Console.WriteLine();
 
             var gameStrategies = StrategiesBuilder.GetStrategies(options);
-            Strategies = gameStrategies.DistinctBy(_ => _.Name);
+            Strategies = gameStrategies.DistinctBy(_ => _.Name).ToList();
 
             var step = 0;
             var shouldStop = WriteScores(gameStrategies, step);

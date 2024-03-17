@@ -7,7 +7,7 @@ namespace Gameplay.Games.Tournament
 {
     internal class GameField
     {
-        public GameField(Options options, IList<IStrategy> strategies)
+        public GameField(Options options, List<IStrategy> strategies)
         {
             Options = options;
             Randomizer = new();
@@ -24,7 +24,7 @@ namespace Gameplay.Games.Tournament
 
         public List<History> Actions { get; private set; }
 
-        private void AddStrategies(IList<IStrategy> strategies)
+        private void AddStrategies(List<IStrategy> strategies)
         {
             foreach (var strategy in strategies)
             {

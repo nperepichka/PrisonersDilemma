@@ -49,9 +49,13 @@ namespace Gameplay.Constructs
 
         #region Population
 
-        public int SamePopulationStepsToStop { get; set; }
+        public int BasePopulation { get; set; }
+
+        // TODO: rename both next properties
 
         public string DominationStrategy { get; set; }
+
+        public int DominationStrategyCoef { get; set; }
 
         #endregion
 
@@ -63,7 +67,7 @@ namespace Gameplay.Constructs
 
         public double ValuableCooperationScoreNumber { get; set; }
 
-        public int Repeats { get; set; }
+        public int TournamentRepeats { get; set; }
 
         #endregion
 
