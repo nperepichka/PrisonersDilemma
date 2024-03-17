@@ -5,7 +5,7 @@ namespace Gameplay.Strategies.Helpers
 {
     internal static class StrategiesBuilder
     {
-        public static IStrategy[] GetAllStrategies() => [
+        public static IList<IStrategy> GetAllStrategies() => [
             new AlwaysCooperate(),
             new AlwaysDefect(),
             new TitForTat(),
@@ -24,20 +24,38 @@ namespace Gameplay.Strategies.Helpers
             new Smart(),
         ];
 
-        public static IStrategy[] GetStrategies(Options options)
+        public static IList<IStrategy> GetStrategies(Options options)
         {
-            var strategies = GetAllStrategies().ToList();
-            if (!string.IsNullOrEmpty(options.DominationStrategy))
+            var allStrategies = GetAllStrategies();
+            IList<IStrategy> strategies = [];
+
+            if (options.Strategies != null && options.Strategies.Length != 0)
             {
-                while (strategies.Count(_ => _.Name == options.DominationStrategy) < strategies.Count(_ => _.Name != options.DominationStrategy))
+                foreach (var strategyName in options.Strategies)
                 {
-                    var dominationStrategy = strategies.FirstOrDefault(_ => _.Name == options.DominationStrategy)
-                        ?? throw new ArgumentException($"Unknown strategy: {options.DominationStrategy}");
-                    var clone = dominationStrategy.Clone();
+                    var strategy = allStrategies.FirstOrDefault(_ => _.Name == strategyName)
+                        ?? throw new ArgumentException($"Unknown strategy: {strategyName}");
+                    var clone = strategy.Clone();
                     strategies.Add(clone);
                 }
             }
-            return [.. strategies];
+            else
+            {
+                strategies = allStrategies;
+            }
+
+            if (!string.IsNullOrEmpty(options.DominationStrategy))
+            {
+                var strategy = allStrategies.FirstOrDefault(_ => _.Name == options.DominationStrategy)
+                    ?? throw new ArgumentException($"Unknown strategy: {options.DominationStrategy}");
+                while (strategies.Count(_ => _.Name == options.DominationStrategy) < strategies.Count(_ => _.Name != options.DominationStrategy))
+                {
+                    var clone = strategy.Clone();
+                    strategies.Add(clone);
+                }
+            }
+
+            return strategies;
         }
     }
 }

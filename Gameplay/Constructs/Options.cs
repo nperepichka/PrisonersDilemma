@@ -9,7 +9,6 @@ namespace Gameplay.Constructs
     {
         public GameType GameType { get; set; }
 
-        // TODO: implement
         public string[] Strategies { get; set; }
 
         #region Socres
