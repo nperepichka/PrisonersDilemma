@@ -1,5 +1,4 @@
 ﻿using Gameplay.Constructs;
-using Gameplay.Games.Population.Enums;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
@@ -25,80 +24,49 @@ namespace Gameplay.Games.Population
 
         public void DoStep()
         {
+            // Moran process
+
             var tournamentGameField = new Tournament.GameField(Options, Strategies);
             tournamentGameField.DoSteps();
 
             var score = Strategies.Select(s => new
             {
                 s.Id,
-                s.Name,
                 Actions = tournamentGameField.Actions.Where(_ => _.ContainsStrategy(s.Id)).ToArray(),
             }).Select(s => new
             {
                 s.Id,
-                s.Name,
                 Score = s.Actions.Average(_ => _.GetScore(s.Id, Options.MinSteps)),
-            })
-            .OrderByDescending(_ => _.Score)
-            .ToArray();
+            }).ToArray();
 
-            var birthId = Guid.Empty;
-            var deathId = Guid.Empty;
+            var d1 = score.Max(s => s.Score) + score.Min(s => s.Score);
+            var d2 = score.Min(s => s.Score) / 2;
 
-            switch (Options.PopulationBuildType)
+            var score2 = score.Select(s => new
             {
-                case PopulationBuildType.MoranProcess:
-                    var d = score.Max(s => s.Score) + score.Min(s => s.Score);
+                s.Id,
+                Score = s.Score - d2,
+                ReverseScore = d1 - s.Score - d2,
+            }).OrderByDescending(_ => _.Score);
 
-                    var score2 = score.Select(s => new
-                    {
-                        s.Id,
-                        s.Score,
-                        ReverseScore = d - s.Score,
-                    }).OrderByDescending(_ => _.Score);
+            var cumulative1 = 0.0;
+            var cumulative2 = 0.0;
 
-                    var cumulative1 = 0.0;
-                    var cumulative2 = 0.0;
+            var cSums = score2.Select(s => new
+            {
+                s.Id,
+                s.Score,
+                Cumulative = (cumulative1 += s.Score),
+                ReverseCumulative = (cumulative2 += s.ReverseScore),
+            }).ToArray();
 
-                    var cSums = score2.Select(s => new
-                    {
-                        s.Id,
-                        s.Score,
-                        Cumulative = (cumulative1 += s.Score),
-                        ReverseCumulative = (cumulative2 += s.ReverseScore),
-                    }).ToArray();
+            var total = cSums.Max(_ => _.Cumulative);
+            var r = Randomizer.NextDouble() * total;
+            var birthId = cSums.First(_ => _.Cumulative >= r).Id;
 
-                    var total1 = cSums.Max(_ => _.Cumulative);
-                    var r1 = Randomizer.NextDouble() * total1;
-
-                    var total2 = cSums.Max(_ => _.ReverseCumulative);
-                    var r2 = Randomizer.NextDouble() * total2;
-
-                    for (var i = 0; i < cSums.Length; i++)
-                    {
-                        if (cSums[i].Cumulative >= r1)
-                        {
-                            birthId = cSums[i].Id;
-                            break;
-                        }
-                    }
-
-                    for (var i = 0; i < cSums.Length; i++)
-                    {
-                        if (cSums[i].ReverseCumulative >= r2)
-                        {
-                            deathId = cSums[i].Id;
-                            break;
-                        }
-                    }
-                    break;
-                case PopulationBuildType.MinMax:
-                    birthId = score.First().Id;
-                    deathId = score.Last().Id;
-                    break;
-                default:
-                    throw new NotImplementedException($"Not implemented: {Options.PopulationBuildType}");
-            }
+            var reverseTotal = cSums.Max(_ => _.ReverseCumulative);
+            r = Randomizer.NextDouble() * reverseTotal;
+            var deathId = cSums.First(_ => _.ReverseCumulative >= r).Id;
 
             var birth = GetBirthStategy(() =>
             {

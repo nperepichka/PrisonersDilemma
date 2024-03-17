@@ -127,10 +127,10 @@ namespace Gameplay.Games.Tournament
 
                 while (true)
                 {
-                    var strategy1Actions = actions.GetStrategy1Actions();
-                    var strategy2Actions = actions.GetStrategy2Actions();
-                    var strategy1Cache = actions.GetStrategy1Cache();
-                    var strategy2Cache = actions.GetStrategy2Cache();
+                    var strategy1Actions = actions.Strategy1Actions;
+                    var strategy2Actions = actions.Strategy2Actions;
+                    var strategy1Cache = actions.Strategy1Cache;
+                    var strategy2Cache = actions.Strategy2Cache;
 
                     var action1 = DoActionOrRandom(() =>
                     {
@@ -157,7 +157,8 @@ namespace Gameplay.Games.Tournament
                         Score = CalculateScore(action2, action2Intensive, action1, action1Intensive)
                     };
 
-                    actions.AddAction(action1Item, action2Item);
+                    strategy1Actions.Add(action1Item);
+                    strategy2Actions.Add(action2Item);
 
                     if (actions.ShouldStopTournament(Options))
                     {

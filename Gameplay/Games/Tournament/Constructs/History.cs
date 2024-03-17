@@ -6,25 +6,21 @@ namespace Gameplay.Games.Tournament.Constructs
 {
     internal class History(IStrategy strategy1, IStrategy strategy2)
     {
-        public string Strategy1Name { get; private set; } = strategy1.Name;
-
-        public string Strategy2Name { get; private set; } = strategy2.Name;
-
         public Guid Strategy1Id { get; private set; } = strategy1.Id;
 
         public Guid Strategy2Id { get; private set; } = strategy2.Id;
 
-        private List<HistoryItem> Strategy1Actions { get; set; } = [];
+        public List<HistoryItem> Strategy1Actions { get; private set; } = [];
 
-        private List<HistoryItem> Strategy2Actions { get; set; } = [];
+        public List<HistoryItem> Strategy2Actions { get; private set; } = [];
 
         private List<double> CooperationScores1 { get; set; } = [];
 
         private List<double> CooperationScores2 { get; set; } = [];
 
-        private Dictionary<string, object> Strategy1Cache { get; set; } = [];
+        public Dictionary<string, object> Strategy1Cache { get; private set; } = [];
 
-        private Dictionary<string, object> Strategy2Cache { get; set; } = [];
+        public Dictionary<string, object> Strategy2Cache { get; private set; } = [];
 
         public bool ContainsStrategy(Guid strategyId)
         {
@@ -70,32 +66,6 @@ namespace Gameplay.Games.Tournament.Constructs
                 n = Strategy2Actions.Count(_ => _.Action == GameAction.Defect);
             }
             return n;
-        }
-
-        public List<HistoryItem> GetStrategy1Actions()
-        {
-            return Strategy1Actions;
-        }
-
-        public List<HistoryItem> GetStrategy2Actions()
-        {
-            return Strategy2Actions;
-        }
-
-        public Dictionary<string, object> GetStrategy1Cache()
-        {
-            return Strategy1Cache;
-        }
-
-        public Dictionary<string, object> GetStrategy2Cache()
-        {
-            return Strategy2Cache;
-        }
-
-        public void AddAction(HistoryItem strategy1ActionItem, HistoryItem strategy2ActionItem)
-        {
-            Strategy1Actions.Add(strategy1ActionItem);
-            Strategy2Actions.Add(strategy2ActionItem);
         }
 
         public int GetStepsCount()

@@ -1,5 +1,4 @@
 ﻿using Gameplay.Enums;
-using Gameplay.Games.Population.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -51,8 +50,6 @@ namespace Gameplay.Constructs
         #region Population
 
         public int SamePopulationStepsToStop { get; set; }
-
-        public PopulationBuildType PopulationBuildType { get; set; }
 
         public string DominationStrategy { get; set; }
 
