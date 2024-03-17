@@ -72,7 +72,6 @@ namespace Gameplay.Games.Population
 
             Guid birthId;
             Guid deathId;
-            var m = 3;
 
             List<string> selected = [];
             var total = cSums.Max(_ => _.Cumulative);
@@ -81,7 +80,7 @@ namespace Gameplay.Games.Population
                 var r = Randomizer.NextDouble() * total;
                 var s = cSums.First(_ => _.Cumulative >= r);
                 selected.Add(s.Name);
-                if (selected.Count(_ => _ == s.Name) == m)
+                if (selected.Count(_ => _ == s.Name) == 3)
                 {
                     birthId = s.Id;
                     break;
@@ -94,8 +93,9 @@ namespace Gameplay.Games.Population
             {
                 var r = Randomizer.NextDouble() * reverseTotal;
                 var s = cSums.First(_ => _.ReverseCumulative >= r);
-                selected.Add(s.Name);
-                if (selected.Count(_ => _ == s.Name) == m)
+                var sId = s.Id.ToString();
+                selected.Add(sId);
+                if (selected.Count(_ => _ == sId) == 2)
                 {
                     deathId = s.Id;
                     break;
