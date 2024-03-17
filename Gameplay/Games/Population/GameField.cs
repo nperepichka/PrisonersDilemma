@@ -32,22 +32,26 @@ namespace Gameplay.Games.Population
             var score = Strategies.Select(s => new
             {
                 s.Id,
-                Actions = tournamentGameField.Actions.Where(_ => _.ContainsStrategy(s.Id)).ToArray(),
+                Actions = tournamentGameField
+                    .Actions
+                    .Where(_ => _.ContainsStrategy(s.Id))
+                    .ToArray(),
             }).Select(s => new
             {
                 s.Id,
-                Score = s.Actions.Average(_ => _.GetScore(s.Id, Options.MinSteps)),
+                Score = s
+                    .Actions
+                    .Average(_ => _.GetScore(s.Id, Options.MinSteps)),
             }).ToArray();
 
             var d1 = score.Max(s => s.Score) + score.Min(s => s.Score);
-            var d2 = score.Min(s => s.Score) / 2;
 
             var score2 = score.Select(s => new
             {
                 s.Id,
-                Score = s.Score - d2,
-                ReverseScore = d1 - s.Score - d2,
-            }).OrderByDescending(_ => _.Score);
+                s.Score,
+                ReverseScore = d1 - s.Score,
+            }).OrderBy(_ => _.Id);
 
             var cumulative1 = 0.0;
             var cumulative2 = 0.0;
