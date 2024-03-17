@@ -49,13 +49,9 @@ namespace Gameplay.Constructs
 
         #region Population
 
-        public int BasePopulation { get; set; }
+        public int BasePopulationMultiplicity { get; set; }
 
-        // TODO: rename both next properties
-
-        public string DominationStrategy { get; set; }
-
-        public int DominationStrategyCoef { get; set; }
+        public string DominantStrategy { get; set; }
 
         #endregion
 

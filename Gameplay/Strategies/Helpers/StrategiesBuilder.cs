@@ -49,16 +49,16 @@ namespace Gameplay.Strategies.Helpers
                 var strategiesSet = strategies;
                 strategies = [];
 
-                for (var i = 1; i <= options.BasePopulation; i++)
+                for (var i = 1; i <= options.BasePopulationMultiplicity; i++)
                 {
                     strategies.AddRange(strategiesSet.Select(_ => _.Clone()));
                 }
 
-                if (!string.IsNullOrEmpty(options.DominationStrategy))
+                if (!string.IsNullOrEmpty(options.DominantStrategy))
                 {
-                    var strategy = allStrategies.FirstOrDefault(_ => _.Name == options.DominationStrategy)
-                        ?? throw new ArgumentException($"Unknown strategy: {options.DominationStrategy}");
-                    while (strategies.Count(_ => _.Name == options.DominationStrategy) * options.DominationStrategyCoef < strategies.Count(_ => _.Name != options.DominationStrategy))
+                    var strategy = allStrategies.FirstOrDefault(_ => _.Name == options.DominantStrategy)
+                        ?? throw new ArgumentException($"Unknown strategy: {options.DominantStrategy}");
+                    for (var i = 1; i <= options.BasePopulationMultiplicity; i++)
                     {
                         var clone = strategy.Clone();
                         strategies.Add(clone);

@@ -1,5 +1,6 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Strategies.Interfaces;
+using System.Net;
 
 namespace Gameplay.Games.Population
 {
@@ -24,7 +25,7 @@ namespace Gameplay.Games.Population
 
         public void DoStep()
         {
-            // Moran process
+            // Moran process with some improvements
 
             var tournamentGameField = new Tournament.GameField(Options, Strategies);
             tournamentGameField.DoSteps();
@@ -32,6 +33,7 @@ namespace Gameplay.Games.Population
             var score = Strategies.Select(s => new
             {
                 s.Id,
+                s.Name,
                 Actions = tournamentGameField
                     .Actions
                     .Where(_ => _.ContainsStrategy(s.Id))
@@ -39,6 +41,7 @@ namespace Gameplay.Games.Population
             }).Select(s => new
             {
                 s.Id,
+                s.Name,
                 Score = s
                     .Actions
                     .Average(_ => _.GetScore(s.Id, Options.MinSteps)),
@@ -50,6 +53,7 @@ namespace Gameplay.Games.Population
             {
                 s.Id,
                 s.Score,
+                s.Name,
                 ReverseScore = d1 - s.Score,
                 Random = Randomizer.Next(),
             }).OrderBy(_ => _.Random);
@@ -61,17 +65,42 @@ namespace Gameplay.Games.Population
             {
                 s.Id,
                 s.Score,
+                s.Name,
                 Cumulative = (cumulative1 += s.Score),
                 ReverseCumulative = (cumulative2 += s.ReverseScore),
             }).ToArray();
 
-            var total = cSums.Max(_ => _.Cumulative);
-            var r = Randomizer.NextDouble() * total;
-            var birthId = cSums.First(_ => _.Cumulative >= r).Id;
+            Guid birthId;
+            Guid deathId;
+            var m = 3;
 
+            List<string> selected = [];
+            var total = cSums.Max(_ => _.Cumulative);
+            while (true)
+            {
+                var r = Randomizer.NextDouble() * total;
+                var s = cSums.First(_ => _.Cumulative >= r);
+                selected.Add(s.Name);
+                if (selected.Count(_ => _ == s.Name) == m)
+                {
+                    birthId = s.Id;
+                    break;
+                }
+            }
+
+            selected = [];
             var reverseTotal = cSums.Max(_ => _.ReverseCumulative);
-            r = Randomizer.NextDouble() * reverseTotal;
-            var deathId = cSums.First(_ => _.ReverseCumulative >= r).Id;
+            while (true)
+            {
+                var r = Randomizer.NextDouble() * reverseTotal;
+                var s = cSums.First(_ => _.ReverseCumulative >= r);
+                selected.Add(s.Name);
+                if (selected.Count(_ => _ == s.Name) == m)
+                {
+                    deathId = s.Id;
+                    break;
+                }
+            }
 
             var birth = GetBirthStategy(() =>
             {
