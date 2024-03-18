@@ -7,7 +7,7 @@ namespace Gameplay.Games.Tournament
 {
     internal class Game(Options options)
     {
-        private const string TableFormat = "{0,8}{1,12}{2,15}{3,25}{4,10}";
+        private const string TableFormat = "{0,7}{1,12}{2,27}{3,7}";
 
         private IEnumerable<IStrategy> Strategies { get; set; }
 
@@ -25,28 +25,17 @@ namespace Gameplay.Games.Tournament
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Score = s.Actions.Average(_ => _.GetScore(s.Id, options.MinSteps)),
-                AggressiveNumber = s.Actions.Sum(_ => _.GetDefectsCount(s.Id)) * 10 / s.Actions.Sum(_ => _.GetStepsCount()),
-            }).Select(s => new
-            {
-                s.Name,
-                s.Selfish,
-                s.Nice,
-                s.Score,
-                AggressiveNumber = Math.Max(s.AggressiveNumber - 1, 0),
-                Absolute = s.Score / options.D,
-                Cooperation = s.Score / options.C,
+                Score = s.Actions.Average(_ => _.GetScore(s.Id, options)),
+                Aggressive = Math.Round(s.Actions.Average(_ => _.GetAggressiveValue(s.Id)), 0),
             }).OrderByDescending(_ => _.Score);
 
-            OutputHelper.Write(TableFormat, "Score", "Absolute", "Cooperation", "Name", "Flags");
+            OutputHelper.Write(TableFormat, "Score", "Aggressive", "Name", "Flags");
             OutputHelper.WriteDivider(TableFormat);
             foreach (var s in score)
             {
-                var succeedFlag = s.Absolute >= 60 && s.Cooperation >= 85 ? "*" : "";
-                var selfishFlag = s.Selfish ? "S" : "";
-                var niceFlag = s.Nice ? "N" : "";
-                var flagsStr = $"{succeedFlag,2}{niceFlag,2}{selfishFlag,2}{s.AggressiveNumber,2}";
-                OutputHelper.Write(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr);
+                var selfishFlag = s.Selfish ? "S" : string.Empty;
+                var niceFlag = s.Nice ? "N" : string.Empty;
+                OutputHelper.Write(TableFormat, $"{s.Score:0.00}", $"{s.Aggressive}%", s.Name, $"{niceFlag,2}{selfishFlag,2}");
             }
 
             var selfishTotalScore = score.Where(_ => _.Selfish).Sum(s => s.Score);

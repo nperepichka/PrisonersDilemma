@@ -6,7 +6,7 @@ namespace Gameplay.Games.Population
 {
     internal class Game(Options options)
     {
-        private const string TableFormat = "{0,6}{1,27}{2,7}";
+        private const string TableFormat = "{0,7}{1,27}{2,7}";
 
         private List<IStrategy> Strategies { get; set; }
 
@@ -27,10 +27,9 @@ namespace Gameplay.Games.Population
 
             foreach (var s in score)
             {
-                var selfishFlag = s.Selfish ? "S" : "";
-                var niceFlag = s.Nice ? "N" : "";
-                var flagsStr = $"{niceFlag,2}{selfishFlag,2}";
-                OutputHelper.Write(TableFormat, s.Count, s.Name, flagsStr);
+                var selfishFlag = s.Selfish ? "S" : string.Empty;
+                var niceFlag = s.Nice ? "N" : string.Empty;
+                OutputHelper.Write(TableFormat, s.Count, s.Name, $"{niceFlag,2}{selfishFlag,2}");
             }
 
             OutputHelper.Write();

@@ -43,7 +43,7 @@ namespace Gameplay.Games.Population
                 s.Name,
                 Score = s
                     .Actions
-                    .Average(_ => _.GetScore(s.Id, Options.MinSteps)),
+                    .Average(_ => _.GetScore(s.Id, Options)),
             }).ToArray();
 
             var d1 = score.Max(s => s.Score) + score.Min(s => s.Score);

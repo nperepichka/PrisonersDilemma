@@ -14,9 +14,9 @@ namespace Gameplay.Games.Tournament.Constructs
 
         public List<HistoryItem> Strategy2Actions { get; private set; } = [];
 
-        private List<double> CooperationScores1 { get; set; } = [];
+        private List<double> Strategy1Scores { get; set; } = [];
 
-        private List<double> CooperationScores2 { get; set; } = [];
+        private List<double> Strategy2Scores { get; set; } = [];
 
         public Dictionary<string, object> Strategy1Cache { get; private set; } = [];
 
@@ -45,12 +45,12 @@ namespace Gameplay.Games.Tournament.Constructs
             return score;
         }
 
-        public double GetScore(Guid strategyId, int minSteps)
+        public double GetScore(Guid strategyId, Options options)
         {
-            return GetScoresSum(strategyId) * minSteps / GetStepsCount();
+            return GetScoresSum(strategyId) * options.MinSteps / (Strategy1Actions.Count * options.C);
         }
 
-        public int GetDefectsCount(Guid strategyId)
+        public int GetAggressiveValue(Guid strategyId)
         {
             int n = 0;
             if (Strategy1Id == strategyId)
@@ -65,23 +65,17 @@ namespace Gameplay.Games.Tournament.Constructs
             {
                 n = Strategy2Actions.Count(_ => _.Action == GameAction.Defect);
             }
-            return n;
+            return n * 100 / Strategy1Actions.Count;
         }
 
-        public int GetStepsCount()
-        {
-            return Strategy1Actions.Count;
-        }
-
-        // Author's idea for determining the optimal number of iterations, based on the idea from the 2nd Axelrod tournament
         public bool ShouldStopTournament(Options options)
         {
-            var step = GetStepsCount();
+            var step = Strategy1Actions.Count;
 
-            var cooperationScore1 = GetScoresSum(Strategy1Id) * 100 / (step * options.C);
-            var cooperationScore2 = GetScoresSum(Strategy2Id) * 100 / (step * options.C);
-            CooperationScores1.Add(cooperationScore1);
-            CooperationScores2.Add(cooperationScore2);
+            var score1 = GetScore(Strategy1Id, options);
+            var score2 = GetScore(Strategy2Id, options);
+            Strategy1Scores.Add(score1);
+            Strategy2Scores.Add(score2);
 
             if (step < options.MinSteps)
             {
@@ -91,8 +85,8 @@ namespace Gameplay.Games.Tournament.Constructs
             for (var i = step - 2; i >= step - options.SameLastCooperationScores; i--)
             {
                 if (
-                    Math.Abs(cooperationScore1 - CooperationScores1.ElementAt(i)) > options.ValuableCooperationScoreNumber
-                    || Math.Abs(cooperationScore2 - CooperationScores2.ElementAt(i)) > options.ValuableCooperationScoreNumber
+                    Math.Abs(score1 - Strategy1Scores.ElementAt(i)) > options.ValuableCooperationScoreNumber
+                    || Math.Abs(score2 - Strategy2Scores.ElementAt(i)) > options.ValuableCooperationScoreNumber
                     )
                 {
                     return false;
