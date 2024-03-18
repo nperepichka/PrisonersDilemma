@@ -11,7 +11,7 @@ namespace Gameplay.Strategies
         public override GameAction DoAction(ActionParams actionParams)
         {
             var lastOpponentAction = actionParams.OpponentActions.LastOrDefault();
-            return lastOpponentAction?.Action == GameAction.Cooperate ? GameAction.Defect : GameAction.Cooperate;
+            return lastOpponentAction?.Action == GameAction.Defect ? GameAction.Cooperate : GameAction.Defect;
         }
     }
 }

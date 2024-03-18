@@ -1,5 +1,5 @@
 ﻿using Gameplay.Constructs;
-using Gameplay.Strategies.Helpers;
+using Gameplay.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Population
@@ -21,19 +21,19 @@ namespace Gameplay.Games.Population
             }).OrderByDescending(_ => _.Count)
             .ToArray();
 
-            Console.WriteLine($"Step: {step}");
-            Console.WriteLine(string.Format(TableFormat, "Count", "Name", "Flags"));
-            Console.WriteLine("-----------------------------------------");
+            OutputHelper.Write($"Step: {step}");
+            OutputHelper.Write(TableFormat, "Count", "Name", "Flags");
+            OutputHelper.WriteDivider(TableFormat);
 
             foreach (var s in score)
             {
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
                 var flagsStr = $"{niceFlag,2}{selfishFlag,2}";
-                Console.WriteLine(string.Format(TableFormat, s.Count, s.Name, flagsStr));
+                OutputHelper.Write(TableFormat, s.Count, s.Name, flagsStr);
             }
 
-            Console.WriteLine();
+            OutputHelper.Write();
 
             var differentStrategiesCount = score.Count(_ => _.Count > 0);
             return differentStrategiesCount == 1;
@@ -41,8 +41,7 @@ namespace Gameplay.Games.Population
 
         public void RunGame()
         {
-            Console.WriteLine($"Flexible: {options.FlexibilityValue:0.00}   Seed: {options.Seed:0.00}   Mutation: {options.Mutation:0.00}");
-            Console.WriteLine();
+            OutputHelper.Write($"Flexible: {options.FlexibilityValue:0.00}   Seed: {options.Seed:0.00}   Mutation: {options.Mutation:0.00}", true);
 
             var gameStrategies = StrategiesBuilder.GetStrategies(options);
             Strategies = gameStrategies.DistinctBy(_ => _.Name).ToList();

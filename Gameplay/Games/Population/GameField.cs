@@ -1,6 +1,5 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Strategies.Interfaces;
-using System.Net;
 
 namespace Gameplay.Games.Population
 {

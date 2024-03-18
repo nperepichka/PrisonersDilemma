@@ -1,7 +1,8 @@
 ﻿using Gameplay.Constructs;
+using Gameplay.Strategies;
 using Gameplay.Strategies.Interfaces;
 
-namespace Gameplay.Strategies.Helpers
+namespace Gameplay.Helpers
 {
     internal static class StrategiesBuilder
     {

@@ -1,6 +1,6 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Games.Tournament.Constructs;
-using Gameplay.Strategies.Helpers;
+using Gameplay.Helpers;
 using Gameplay.Strategies.Interfaces;
 
 namespace Gameplay.Games.Tournament
@@ -38,22 +38,21 @@ namespace Gameplay.Games.Tournament
                 Cooperation = s.Score / options.C,
             }).OrderByDescending(_ => _.Score);
 
-            Console.WriteLine(string.Format(TableFormat, "Score", "Absolute", "Cooperation", "Name", "Flags"));
-            Console.WriteLine("-----------------------------------------------------------------------");
+            OutputHelper.Write(TableFormat, "Score", "Absolute", "Cooperation", "Name", "Flags");
+            OutputHelper.WriteDivider(TableFormat);
             foreach (var s in score)
             {
                 var succeedFlag = s.Absolute >= 60 && s.Cooperation >= 85 ? "*" : "";
                 var selfishFlag = s.Selfish ? "S" : "";
                 var niceFlag = s.Nice ? "N" : "";
                 var flagsStr = $"{succeedFlag,2}{niceFlag,2}{selfishFlag,2}{s.AggressiveNumber,2}";
-                Console.WriteLine(string.Format(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr));
+                OutputHelper.Write(TableFormat, $"{s.Score:0.00}", $"{s.Absolute:0.00}%", $"{s.Cooperation:0.00}%", s.Name, flagsStr);
             }
 
             var selfishTotalScore = score.Where(_ => _.Selfish).Sum(s => s.Score);
             var humaneTotalScore = score.Where(_ => !_.Selfish).Sum(s => s.Score);
             var maxActions = Math.Max(actions.Max(_ => _.Strategy1Actions.Count), actions.Max(_ => _.Strategy2Actions.Count));
-            Console.WriteLine($"Total score: selfish {selfishTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}");
-            Console.WriteLine();
+            OutputHelper.Write($"Total score: selfish {selfishTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}", true);
         }
 
         public void RunGame()
@@ -65,7 +64,7 @@ namespace Gameplay.Games.Tournament
 
             var hff = options.HumaneFlexible ? "HF " : "";
             var sff = options.SelfishFlexible ? "SF" : "";
-            Console.WriteLine($"Flexible: {options.FlexibilityValue:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
+            OutputHelper.Write($"Flexible: {options.FlexibilityValue:0.00} {hff}{sff}   Seed: {options.Seed:0.00}");
 
             for (var r = 0; r < options.TournamentRepeats; r++)
             {

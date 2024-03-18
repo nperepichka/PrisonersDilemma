@@ -1,5 +1,6 @@
 ﻿using Gameplay.Constructs;
 using Gameplay.Enums;
+using Gameplay.Helpers;
 using System.Diagnostics;
 using PopulationGame = Gameplay.Games.Population.Game;
 using TournamentGame = Gameplay.Games.Tournament.Game;
@@ -18,7 +19,7 @@ internal class Program
     private static void RunGameWithOptions(string optionsFile)
     {
         var options = Options.Init(optionsFile);
-        Console.WriteLine($"Running game with options: {optionsFile}");
+        OutputHelper.Write($"Running game with options: {optionsFile}");
 
         var watch = Stopwatch.StartNew();
 
@@ -36,22 +37,13 @@ internal class Program
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
-        Console.WriteLine($"Time: {elapsedMs * 0.001:0.00}s");
+        OutputHelper.Write($"Time: {elapsedMs * 0.001:0.00}s");
     }
 
     private static string[] ProcessArgs(string[] args)
     {
         if (args.Length > 0)
         {
-            if (args[0] == "?")
-            {
-                Console.WriteLine("Syntax:");
-                Console.WriteLine("  Run using Options.json: Gameplay.exe");
-                Console.WriteLine("  Run few times using different options files: Gameplay.exe OptionsFile1 OptionsFile2 ...");
-                Console.WriteLine("  Help: Gameplay.exe /?");
-                Environment.Exit(0);
-            }
-
             foreach (string arg in args)
             {
                 if (!File.Exists(arg))
