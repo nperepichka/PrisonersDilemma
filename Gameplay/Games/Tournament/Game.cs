@@ -40,7 +40,7 @@ namespace Gameplay.Games.Tournament
 
             var selfishTotalScore = score.Where(_ => _.Selfish).Sum(s => s.Score);
             var humaneTotalScore = score.Where(_ => !_.Selfish).Sum(s => s.Score);
-            var maxActions = Math.Max(actions.Max(_ => _.Strategy1Actions.Count), actions.Max(_ => _.Strategy2Actions.Count));
+            var maxActions = actions.Max(_ => _.Strategy1Actions.Count);
             OutputHelper.Write($"Total score: selfish {selfishTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}", true);
         }
 

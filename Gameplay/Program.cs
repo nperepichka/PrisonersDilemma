@@ -9,18 +9,17 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var optionsFiles = ProcessArgs(args);
-        foreach (var optionsFile in optionsFiles)
+        if (args.Length > 1)
         {
-            RunGameWithOptions(optionsFile);
+            throw new ArgumentException("Invalid arguments passed");
         }
+        var optionsPath = args.Length == 0 ? "Options.json" : args[0];
+        RunGameWithOptions(optionsPath);
     }
 
     private static void RunGameWithOptions(string optionsFile)
     {
         var options = Options.Init(optionsFile);
-        OutputHelper.Write($"Running game with options: {optionsFile}");
-
         var watch = Stopwatch.StartNew();
 
         switch (options.GameType)
@@ -38,23 +37,5 @@ internal class Program
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
         OutputHelper.Write($"Time: {elapsedMs * 0.001:0.00}s");
-    }
-
-    private static string[] ProcessArgs(string[] args)
-    {
-        if (args.Length > 0)
-        {
-            foreach (string arg in args)
-            {
-                if (!File.Exists(arg))
-                {
-                    throw new ArgumentException($"File not found: {arg}");
-                }
-            }
-
-            return args;
-        }
-
-        return ["Options.json"];
     }
 }
