@@ -25,7 +25,7 @@ namespace Gameplay.Games.Tournament
                 s.Name,
                 s.Selfish,
                 s.Nice,
-                Score = s.Actions.Average(_ => _.GetScore(s.Id, options)),
+                Score = s.Actions.Average(_ => _.GetScore(s.Id)),
                 Aggressive = Math.Round(s.Actions.Average(_ => _.GetAggressiveValue(s.Id)), 0),
             }).OrderByDescending(_ => _.Score);
 

@@ -27,7 +27,7 @@ namespace Gameplay.Games.Tournament.Constructs
             return Strategy1Id == strategyId || Strategy2Id == strategyId;
         }
 
-        public double GetScoresSum(Guid strategyId)
+        private double GetScoresSum(Guid strategyId)
         {
             double score = 0;
             if (Strategy1Id == strategyId)
@@ -45,21 +45,20 @@ namespace Gameplay.Games.Tournament.Constructs
             return score;
         }
 
-        public double GetScore(Guid strategyId, Options options)
+        public double GetScore(Guid strategyId)
         {
-            //return GetScoresSum(strategyId) * options.MinSteps / (Strategy1Actions.Count * options.C);
             return GetScoresSum(strategyId) / Strategy1Actions.Count;
         }
 
-        public int GetAggressiveValue(Guid strategyId)
+        public double GetAggressiveValue(Guid strategyId)
         {
-            int n = 0;
+            double n = 0;
             if (Strategy1Id == strategyId)
             {
                 n = Strategy1Actions.Count(_ => _.Action == GameAction.Defect);
                 if (Strategy2Id == strategyId)
                 {
-                    n = (n + Strategy2Actions.Count(_ => _.Action == GameAction.Defect)) / 2;
+                    n = (n + Strategy2Actions.Count(_ => _.Action == GameAction.Defect)) * 0.5;
                 }
             }
             else if (Strategy2Id == strategyId)
@@ -73,8 +72,8 @@ namespace Gameplay.Games.Tournament.Constructs
         {
             var step = Strategy1Actions.Count;
 
-            var score1 = GetScore(Strategy1Id, options);
-            var score2 = GetScore(Strategy2Id, options);
+            var score1 = GetScore(Strategy1Id);
+            var score2 = GetScore(Strategy2Id);
             Strategy1Scores.Add(score1);
             Strategy2Scores.Add(score2);
 
