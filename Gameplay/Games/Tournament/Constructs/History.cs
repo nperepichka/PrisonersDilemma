@@ -47,7 +47,8 @@ namespace Gameplay.Games.Tournament.Constructs
 
         public double GetScore(Guid strategyId, Options options)
         {
-            return GetScoresSum(strategyId) * options.MinSteps / (Strategy1Actions.Count * options.C);
+            //return GetScoresSum(strategyId) * options.MinSteps / (Strategy1Actions.Count * options.C);
+            return GetScoresSum(strategyId) / Strategy1Actions.Count;
         }
 
         public int GetAggressiveValue(Guid strategyId)

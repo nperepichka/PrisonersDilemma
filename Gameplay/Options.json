@@ -15,11 +15,9 @@
   "MinSteps": 100,
   //"DominantStrategy": null,
   "DominantStrategy": "Smart",
-  //"BasePopulationMultiplicity": 1,
   "BasePopulationMultiplicity": 3,
   "Mutation": 0,
   "SameLastCooperationScores": 10,
-  //"ValuableCooperationScoreNumber": 0.01,
-  "ValuableCooperationScoreNumber": 0.1,
+  "ValuableCooperationScoreNumber": 0.01,
   "TournamentRepeats": 1
 }
