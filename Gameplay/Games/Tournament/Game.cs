@@ -33,15 +33,15 @@ namespace Gameplay.Games.Tournament
             OutputHelper.WriteDivider(TableFormat);
             foreach (var s in score)
             {
-                var selfishFlag = s.Selfish ? "S" : string.Empty;
-                var niceFlag = s.Nice ? "N" : string.Empty;
+                var selfishFlag = s.Selfish ? "S" : "H";
+                var niceFlag = s.Nice ? "N" : "E";
                 OutputHelper.Write(TableFormat, $"{s.Score:0.00}", $"{s.Aggressive}%", s.Name, $"{niceFlag,2}{selfishFlag,2}");
             }
 
             var selfishTotalScore = score.Where(_ => _.Selfish).Sum(s => s.Score);
             var humaneTotalScore = score.Where(_ => !_.Selfish).Sum(s => s.Score);
             var maxActions = actions.Max(_ => _.Strategy1Actions.Count);
-            OutputHelper.Write($"Total score: selfish {selfishTotalScore:0.00} / humane {humaneTotalScore:0.00}   Max steps: {maxActions}", true);
+            OutputHelper.Write($"Summary score: Selfish {selfishTotalScore:0.00} / Humane {humaneTotalScore:0.00}\nMax steps: {maxActions}", true);
         }
 
         public void RunGame()
